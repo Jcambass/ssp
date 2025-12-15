@@ -1,0 +1,7 @@
+name=SpaceShipProject
+author=Jcambass
+description=Defend earth!
+bundleID=am.joel.SpaceShipProject
+version=1.0
+buildNumber=115
+imagePath=SystemAssets
