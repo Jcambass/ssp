@@ -128,7 +128,10 @@ end
 
 -- Hook into playbit's key callback system instead of overriding love.keypressed
 playbit.keyPressed = function(key)
-  playdate.keyboard._handleKeyPressed(key)
+  -- Only handle keyboard input when keyboard is visible
+  if playdate.keyboard.isVisible() then
+    playdate.keyboard._handleKeyPressed(key)
+  end
 end
 
 !end
