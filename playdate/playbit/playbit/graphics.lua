@@ -90,12 +90,6 @@ function module.createRootContext()
     backgroundColor = module.colorBlack,
   }
   
-  module.pushContext(contextInfo)
-
-  return contextInfo
-end
-
-function module.pushContext(contextInfo)
   table.insert(module.contextStack, contextInfo)
 
   -- update render target
@@ -106,6 +100,17 @@ function module.pushContext(contextInfo)
 
   -- set colors
   module.applyColor(contextInfo.color)
+
+  return contextInfo
+end
+
+function module.pushContext(contextInfo)
+  table.insert(module.contextStack, contextInfo)
+
+  -- update render target
+  love.graphics.setCanvas(contextInfo.canvas)
+
+  -- Draw mode and color get directly updated when calling setImageDrawMode, setColor and SetBackgroundColor.
 end
 
 function module.popContext()
@@ -121,11 +126,13 @@ function module.popContext()
   local activeContext = module.contextStack[#module.contextStack]
   love.graphics.setCanvas(activeContext.canvas)
 
-  -- update draw mode
+  -- restore draw mode
   module.applyImageDrawMode(activeContext.drawMode)
 
-  -- set colors
+  -- restore colors
   module.applyColor(activeContext.color)
+
+  -- There is no logic to actually set the background color of the canvas yet.
 end
 
 module.kDrawModeCopy = 0
@@ -157,6 +164,10 @@ function module.applyImageDrawMode(mode)
   else
     error("[ERR] Draw mode '"..mode.."' is not yet implemented.")
   end
+end
+
+function module.resetImageDrawMode()
+  module.applyImageDrawMode(module.peakContext().drawMode)
 end
 
 function module.applyColor(c)
@@ -256,8 +267,8 @@ function module.updateContext()
 
   local activeContext = module.contextStack[#module.contextStack]
 
-  module.applyImageDrawMode(activeContext.drawMode)
-  module.applyColor(activeContext.color)
+  -- TODO: Do we need to set the color or draw mode again here?
+  -- Probably not.
 
   if not activeContext.image then
     return

@@ -61,11 +61,13 @@ function module.setColor(color)
     -- reset pattern, as per PD behavior
     module.setPattern({0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff})
     playbit.graphics.peakContext().color = c
+    playbit.graphics.applyColor(c)
   else
     local c = playbit.graphics.colorBlack
     -- reset pattern, as per PD behavior
     module.setPattern({0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
     playbit.graphics.peakContext().color = c
+    playbit.graphics.applyColor(c)
   end
 end
 
@@ -110,7 +112,8 @@ end
 
 -- "copy", "inverted", "XOR", "NXOR", "whiteTransparent", "blackTransparent", "fillWhite", or "fillBlack".
 function module.setImageDrawMode(mode)
-  playbit.graphics.peakContext()._drawMode = mode
+  playbit.graphics.peakContext().drawMode = mode
+  playbit.graphics.applyImageDrawMode(mode)
 end
 
 function module.drawCircleAtPoint(x, y, radius)
@@ -119,7 +122,7 @@ function module.drawCircleAtPoint(x, y, radius)
   love.graphics.circle("line", x, y, radius)
   playbit.graphics.updateContext()
 
-  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.fillCircleAtPoint(x, y, radius)
@@ -127,7 +130,7 @@ function module.fillCircleAtPoint(x, y, radius)
 
   love.graphics.circle("fill", x, y, radius)
   playbit.graphics.updateContext()
-   playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.setLineWidth(width)
@@ -139,7 +142,7 @@ function module.drawRect(x, y, width, height)
 
   love.graphics.rectangle("line", x, y, width, height)
   playbit.graphics.updateContext()
-   playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.fillRect(x, y, width, height)
@@ -147,7 +150,7 @@ function module.fillRect(x, y, width, height)
 
   love.graphics.rectangle("fill", x, y, width, height)
   playbit.graphics.updateContext()
-   playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.drawRoundRect(x, y, width, height, radius)
@@ -155,7 +158,7 @@ function module.drawRoundRect(x, y, width, height, radius)
   playbit.graphics.shader:send("mode", 8)
   love.graphics.rectangle("line", x, y, width, height, radius, radius)
   playbit.graphics.updateContext()
-  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.fillRoundRect(x, y, width, height, radius)
@@ -163,7 +166,7 @@ function module.fillRoundRect(x, y, width, height, radius)
   playbit.graphics.shader:send("mode", 8)
   love.graphics.rectangle("fill", x, y, width, height, radius, radius)
   playbit.graphics.updateContext()
-  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.drawLine(x1, y1, x2, y2)
@@ -171,7 +174,7 @@ function module.drawLine(x1, y1, x2, y2)
 
   love.graphics.line(x1, y1, x2, y2)
   playbit.graphics.updateContext()
-  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.drawArc(x, y, radius, startAngle, endAngle)
@@ -191,7 +194,7 @@ function module.drawArc(x, y, radius, startAngle, endAngle)
     love.graphics.arc("line", "open", x, y, radius, math.rad(endAngle), math.rad(startAngle), 16)
   end
   playbit.graphics.updateContext()
-  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.drawPixel(x, y)
@@ -199,7 +202,7 @@ function module.drawPixel(x, y)
 
   love.graphics.points(x, y)
   playbit.graphics.updateContext()
-  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
+  playbit.graphics.resetImageDrawMode()
 end
 
 function module.setFont(font)
