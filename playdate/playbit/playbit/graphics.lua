@@ -13,6 +13,39 @@ module.colorWhite = module.COLOR_WHITE
 module.colorBlack = module.COLOR_BLACK
 module.colorTransparent = module.COLOR_TRANSPARENT
 module.shader = love.graphics.newShader("playdate/shader")
+-- noop shader for now
+-- module.shader = love.graphics.newShader([[
+--   #pragma language glsl3
+
+-- extern int mode;
+-- extern bool debugDraw;
+-- extern int pattern[64];
+-- extern vec4 white;
+-- extern vec4 black;
+-- extern vec4 transparent;
+-- // Dither parameters
+-- extern bool ditherEnabled = false;
+-- extern float ditherAlpha = 1.0;
+
+--     vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
+--     {
+
+--       // Act like we're using all of these uniforms to avoid warnings
+--       int m = mode;
+--       bool dd = debugDraw;
+--       int p[64];
+--       for (int i = 0; i < 64; i++) {
+--         p[i] = pattern[i];
+--       }
+--       vec4 w = white;
+--       vec4 b = black;
+--       vec4 t = transparent;
+
+
+--       vec4 outputcolor = Texel(tex, texture_coords) * color;
+--       return outputcolor;
+--     }
+-- ]])
 module.drawOffset = { x = 0, y = 0}
 module.drawColorIndex = 1
 module.drawColor = module.colorWhite
