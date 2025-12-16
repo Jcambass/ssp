@@ -16,14 +16,14 @@ function module.new(widthOrPath, height, bgcolor)
     
     -- Initialize with bgcolor (defaults to kColorClear = transparent)
     if bgcolor == playdate.graphics.kColorWhite then
-      -- Fill with white
-      imageData:mapPixel(function(x, y)
-        return 1, 1, 1, 1
-      end)
-    elseif bgcolor == playdate.graphics.kColorBlack then
-      -- Fill with black
+      -- Fill with white (inverted: use black RGB for white display color)
       imageData:mapPixel(function(x, y)
         return 0, 0, 0, 1
+      end)
+    elseif bgcolor == playdate.graphics.kColorBlack then
+      -- Fill with black (inverted: use white RGB for black display color)
+      imageData:mapPixel(function(x, y)
+        return 1, 1, 1, 1
       end)
     else
       bgcolor = playdate.graphics.kColorClear
@@ -319,10 +319,12 @@ function meta:drawFaded(x, y, alpha, ditherType)
   -- Save current state
   local currentShader = love.graphics.getShader()
   local r, g, b, a = love.graphics.getColor()
+  local blendMode, blendAlphaMode = love.graphics.getBlendMode()
   
-  -- Use dither shader
+  -- Use dither shader with proper blend mode
   local shader = getDitherShader()
   love.graphics.setShader(shader)
+  love.graphics.setBlendMode("alpha")
   shader:send("alpha", alpha)
   
   -- Draw with the dither shader
@@ -330,6 +332,7 @@ function meta:drawFaded(x, y, alpha, ditherType)
   love.graphics.draw(self.data, x, y, 0, 1, 1)
   
   -- Restore state
+  love.graphics.setBlendMode(blendMode, blendAlphaMode)
   love.graphics.setShader(currentShader)
   love.graphics.setColor(r, g, b, a)
   
