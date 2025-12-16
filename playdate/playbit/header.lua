@@ -66,9 +66,8 @@ function love.draw()
   love.graphics.setCanvas(playbit.graphics.canvas)
   love.graphics.setShader(playbit.graphics.shader)
 
-  -- Clear the canvas every frame with the background color
-  local c = playbit.graphics.lastClearColor
-  love.graphics.clear(c.r, c.g, c.b, 1)
+  -- Clear the canvas every frame with black color (Playdate default)
+  love.graphics.clear(0, 0, 0, 1)
   
   -- love requires that this is set every loop
   love.graphics.setFont(playbit.graphics.activeFont.data)

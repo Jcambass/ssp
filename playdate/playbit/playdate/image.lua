@@ -25,14 +25,18 @@ function module.new(widthOrPath, height, bgcolor)
       imageData:mapPixel(function(x, y)
         return 0, 0, 0, 1
       end)
+    else
+      bgcolor = playdate.graphics.kColorClear
     end
     -- kColorClear or nil defaults to transparent (already is)
     
     img.data = love.graphics.newImage(imageData)
+    img._imageData = imageData -- Store imageData for sampling
     img._bgcolor = bgcolor -- Store bgcolor for canvas initialization
   else
     -- creating image from file
-    img.data = love.graphics.newImage(widthOrPath..".png")  
+    img.data = love.graphics.newImage(widthOrPath..".png")
+    -- Note: file-based images cannot be sampled without loading the imageData
   end
 
   return img
@@ -124,9 +128,13 @@ function meta:sample(x, y)
   if self._canvas then
     -- If this is a canvas-backed image, get the ImageData from the canvas
     imageData = self._canvas:newImageData()
+  elseif self._imageData then
+    -- If this image was created with dimensions, we stored the imageData
+    imageData = self._imageData
   else
-    -- If this is a regular image, get the ImageData directly
-    imageData = self.data:getData()
+    -- For file-based images without canvas, we can't sample
+    -- Return kColorClear as a fallback
+    return playdate.graphics.kColorClear
   end
   
   if not imageData then
@@ -277,15 +285,6 @@ local function getDitherShader()
         63.0, 31.0, 55.0, 23.0, 61.0, 29.0, 53.0, 21.0
       );
       
-      vec3 rgb2hsv(vec3 c) {
-        vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-        vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-        vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-        float d = q.x - min(q.w, q.y);
-        float e = 1.0e-10;
-        return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-      }
-      
       vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords) {
         vec4 texcolor = Texel(tex, tex_coords);
         
@@ -306,7 +305,7 @@ local function getDitherShader()
           discard;
         }
         
-        // Otherwise, return the texture color as-is
+        // Otherwise, return the texture color as-is (already black or white)
         return texcolor;
       }
     ]]
