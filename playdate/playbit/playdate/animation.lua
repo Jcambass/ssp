@@ -1,0 +1,125 @@
+-- docs: https://sdk.play.date/2.6.2/Inside%20Playdate.html#C-graphics.animation.loop
+
+playdate.graphics.animation = playdate.graphics.animation or {}
+
+local module = {}
+playdate.graphics.animation.loop = module
+
+local meta = {}
+meta.__index = meta
+module.__index = meta
+
+function module.new(delay, imageTable, shouldLoop)
+  local animation = setmetatable({}, meta)
+  
+  animation.startFrame = 1
+  animation.endFrame = 1
+  animation.frame = 1
+  animation.step = 1
+  animation.pause = false
+  animation._startTime = playdate.getCurrentTimeMilliseconds()
+
+  animation.delay = delay or 100
+  animation._imageTable = imageTable
+  animation.shouldLoop = shouldLoop
+
+  if imageTable then
+    animation.endFrame = imageTable:getLength()
+  end
+
+  return animation
+end
+
+function meta:image()
+  -- Update the frame before returning the image
+  if not self.pause then
+    local elapsedTime = playdate.getCurrentTimeMilliseconds() - self._startTime
+    self.frame = self.startFrame + math.floor(elapsedTime / self.delay) * self.step
+
+    if self.frame > self.endFrame then
+      if self.shouldLoop then
+        self.frame = self.startFrame
+        self._startTime = playdate.getCurrentTimeMilliseconds()
+      else
+        self.frame = self.endFrame + 1  -- Set to endFrame + 1 so isValid() returns false
+      end
+    end
+  end
+  
+  -- Return the image at the current frame (clamped to valid range)
+  local imageFrame = math.min(self.frame, self.endFrame)
+  return self._imageTable:getImage(imageFrame)
+end
+
+function meta:setImageTable(it)
+  self._imageTable = it
+end
+
+function meta:isValid()
+  if self.shouldLoop then
+    return true
+  end
+
+  if self.frame > self.endFrame then
+    return false
+  end
+
+  return true
+end
+
+function meta:draw(x, y, flip)
+  if not self.pause then
+    local elapsedTime = playdate.getCurrentTimeMilliseconds() - self._startTime
+    self.frame = self.startFrame + math.floor(elapsedTime / self.delay) * self.step
+
+    if self.frame > self.endFrame then
+      if self.shouldLoop then
+        self.frame = self.startFrame
+        self._startTime = playdate.getCurrentTimeMilliseconds()
+      else
+        self.frame = self.endFrame
+      end
+    end
+  end
+
+  self._imageTable:drawImage(self.frame, x, y, flip)
+end
+
+-- docs: https://sdk.play.date/2.6.2/Inside%20Playdate.html#C-graphics.animation.blinker
+
+local blinker = {}
+playdate.graphics.animation.blinker = blinker
+blinker.meta = {}
+blinker.meta.__index = blinker.meta
+
+function blinker.new(onDuration, offDuration, loop, cycles, default)
+  error("[ERR] playdate.graphics.animation.blinker.new() is not yet implemented.")
+end
+
+function blinker.updateAll()
+  error("[ERR] playdate.graphics.animation.blinker.updateAll() is not yet implemented.")
+end
+
+function blinker.meta:update()
+  error("[ERR] playdate.graphics.animation.blinker:update() is not yet implemented.")
+end
+
+function blinker.meta:start(onDuration, offDuration, loop, cycles, default)
+  error("[ERR] playdate.graphics.animation.blinker:start() is not yet implemented.")
+end
+
+function blinker.meta:startLoop()
+  error("[ERR] playdate.graphics.animation.blinker:startLoop() is not yet implemented.")
+end
+
+function blinker.meta:stop()
+  error("[ERR] playdate.graphics.animation.blinker:stop() is not yet implemented.")
+end
+
+function blinker.stopAll()
+  error("[ERR] playdate.graphics.animation.blinker.stopAll() is not yet implemented.")
+end
+
+function blinker.meta:remove()
+  error("[ERR] playdate.graphics.animation.blinker:remove() is not yet implemented.")
+end
