@@ -4,6 +4,8 @@
 
 -- You'll want to import these in just about every project you'll work on.
 
+@@"playbit/header.lua"
+
 import "CoreLibs/object"
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
