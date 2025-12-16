@@ -117,14 +117,20 @@ function module.setImageDrawMode(mode)
   playbit.graphics.drawMode = mode
   if mode == module.kDrawModeCopy or mode == "copy" then
     playbit.graphics.shader:send("mode", 0)
-  elseif mode == module.kDrawModeFillWhite or mode == "fillWhite" then
-    playbit.graphics.shader:send("mode", 1)
-  elseif mode == module.kDrawModeFillBlack or mode == "fillBlack" then
-    playbit.graphics.shader:send("mode", 2)
-  elseif mode == module.kDrawModeInverted or mode == "inverted" then
-    playbit.graphics.shader:send("mode", 6)
   elseif mode == module.kDrawModeWhiteTransparent or mode == "whiteTransparent" then
+    playbit.graphics.shader:send("mode", 1)
+  elseif mode == module.kDrawModeBlackTransparent or mode == "blackTransparent" then
+    playbit.graphics.shader:send("mode", 2)
+  elseif mode == module.kDrawModeFillWhite or mode == "fillWhite" then
+    playbit.graphics.shader:send("mode", 3)
+  elseif mode == module.kDrawModeFillBlack or mode == "fillBlack" then
     playbit.graphics.shader:send("mode", 4)
+  elseif mode == module.kDrawModeXOR or mode == "XOR" then
+    playbit.graphics.shader:send("mode", 5)
+  elseif mode == module.kDrawModeNXOR or mode == "NXOR" then
+    playbit.graphics.shader:send("mode", 6)
+  elseif mode == module.kDrawModeInverted or mode == "inverted" then
+    playbit.graphics.shader:send("mode", 7)
   else
     error("[ERR] Draw mode '"..mode.."' is not yet implemented.")
   end
