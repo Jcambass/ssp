@@ -26,6 +26,7 @@ love:
 
 clean:
 	rm -rf '$(GAME).pdx'
+	rm ~/Library/Application\ Support/LOVE/_love2d/highscores.json
 
 compile:
 	"$(SDKBIN)/pdc" 'Source' '$(GAME).pdx'

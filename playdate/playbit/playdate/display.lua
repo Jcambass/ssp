@@ -47,12 +47,11 @@ function module.setMosaic(x, y)
 end
 
 function module.setOffset(x, y)
-  -- Not implemented for Love2D
-  -- Offsets the entire display
+  playdate.graphics.setDrawOffset(x, y)
 end
 
 function module.getOffset()
-  return 0, 0
+  return playdate.graphics.getDrawOffset()
 end
 
 function module.loadImage(path)

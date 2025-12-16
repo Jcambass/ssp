@@ -122,4 +122,13 @@ function love.draw()
   playdate.updateInput()
 end
 
+function love.textinput(text)
+  playdate.keyboard._handleTextInput(text)
+end
+
+-- Hook into playbit's key callback system instead of overriding love.keypressed
+playbit.keyPressed = function(key)
+  playdate.keyboard._handleKeyPressed(key)
+end
+
 !end

@@ -23,6 +23,11 @@ end
 function IsNewHighScore(score)
   local oldHighScores = GetHighScores()
 
+  print("Old High Scores:")
+  for i, hs in ipairs(oldHighScores) do
+    print(i .. ": " .. hs.name .. " - " .. hs.score)
+  end
+
   local newHighScoreAt = 0
 
   for i, hs in ipairs(oldHighScores) do
