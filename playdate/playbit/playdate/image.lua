@@ -223,19 +223,90 @@ function meta:blurredImage(radius, numPasses, ditherType, padEdges, xPhase, yPha
   error("[ERR] playdate.graphics.image:blurredImage() is not yet implemented.")
 end
 
+-- Bayer 8x8 dithering shader for drawFaded
+local ditherShader = nil
+
+local function getDitherShader()
+  if not ditherShader then
+    ditherShader = love.graphics.newShader[[
+      uniform float alpha;
+      uniform vec4 white;
+      uniform vec4 black;
+      
+      // Bayer 8x8 matrix (values 0-63)
+      const float bayer8x8[64] = float[64](
+         0.0, 32.0,  8.0, 40.0,  2.0, 34.0, 10.0, 42.0,
+        48.0, 16.0, 56.0, 24.0, 50.0, 18.0, 58.0, 26.0,
+        12.0, 44.0,  4.0, 36.0, 14.0, 46.0,  6.0, 38.0,
+        60.0, 28.0, 52.0, 20.0, 62.0, 30.0, 54.0, 22.0,
+         3.0, 35.0, 11.0, 43.0,  1.0, 33.0,  9.0, 41.0,
+        51.0, 19.0, 59.0, 27.0, 49.0, 17.0, 57.0, 25.0,
+        15.0, 47.0,  7.0, 39.0, 13.0, 45.0,  5.0, 37.0,
+        63.0, 31.0, 55.0, 23.0, 61.0, 29.0, 53.0, 21.0
+      );
+      
+      vec3 rgb2hsv(vec3 c) {
+        vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+        vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+        vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+        float d = q.x - min(q.w, q.y);
+        float e = 1.0e-10;
+        return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+      }
+      
+      vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords) {
+        vec4 texcolor = Texel(tex, tex_coords);
+        
+        if (texcolor.a == 0.0) {
+          return vec4(0.0, 0.0, 0.0, 0.0); // Transparent
+        }
+        
+        // Get position in 8x8 Bayer matrix
+        int x = int(mod(screen_coords.x, 8.0));
+        int y = int(mod(screen_coords.y, 8.0));
+        int index = y * 8 + x;
+        
+        // Get threshold from Bayer matrix
+        float threshold = bayer8x8[index] / 63.0;
+        
+        // If alpha is less than threshold, discard this pixel (transparent)
+        if (alpha < threshold) {
+          discard;
+        }
+        
+        // Otherwise, process the texture color through Playdate's color system
+        float saturation = rgb2hsv(vec3(texcolor)).z;
+        if (saturation >= 0.45) {
+          return white;
+        } else {
+          return black;
+        }
+      }
+    ]]
+  end
+  return ditherShader
+end
+
 function meta:drawFaded(x, y, alpha, ditherType)
-  -- Draw image with alpha transparency
-  -- On Playdate, this uses dithering to simulate transparency
-  -- In Love2D, we can use real alpha blending which looks similar
+  -- Draw image with Bayer dithering to match Playdate behavior
   
   -- Save current state
+  local currentShader = love.graphics.getShader()
   local r, g, b, a = love.graphics.getColor()
   
-  -- Draw directly with alpha, bypassing the draw() method which resets color
-  love.graphics.setColor(1, 1, 1, alpha)
+  -- Use dither shader
+  local shader = getDitherShader()
+  love.graphics.setShader(shader)
+  shader:send("alpha", alpha)
+  shader:send("white", playbit.graphics.colorWhite)
+  shader:send("black", playbit.graphics.colorBlack)
+  
+  -- Draw with the dither shader
+  love.graphics.setColor(1, 1, 1, 1)
   love.graphics.draw(self.data, x, y, 0, 1, 1)
   
-  -- Restore color
+  -- Restore state
+  love.graphics.setShader(currentShader)
   love.graphics.setColor(r, g, b, a)
   
   playbit.graphics.updateContext()
