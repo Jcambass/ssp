@@ -239,7 +239,26 @@ function module.getTextSize(str, fontFamily, leadingAdjustment)
   @@ASSERT(leadingAdjustment == nil, "[ERR] Parameter leadingAdjustment is not yet implemented.")
 
   local font = playbit.graphics.activeFont
-  return font:getTextWidth(str), font:getHeight()
+  
+  -- Handle multi-line text
+  local lines = {}
+  for line in string.gmatch(str, "[^\n]*") do
+    table.insert(lines, line)
+  end
+  
+  -- Calculate max width and total height
+  local maxWidth = 0
+  for _, line in ipairs(lines) do
+    local lineWidth = font:getTextWidth(line)
+    if lineWidth > maxWidth then
+      maxWidth = lineWidth
+    end
+  end
+  
+  local lineHeight = font:getHeight()
+  local totalHeight = lineHeight * #lines
+  
+  return maxWidth, totalHeight
 end
 
 -- playdate.graphics.drawTextInRect(str, x, y, width, height, [leadingAdjustment, [truncationString, [alignment, [font]]]]) 

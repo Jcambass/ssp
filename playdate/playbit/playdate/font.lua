@@ -10,7 +10,7 @@ module.__index = meta
 function module.new(path)
   local font = setmetatable({}, meta)
   font.data = love.graphics.newFont(path..".fnt")
-  font.data:setLineHeight(0)
+  font.data:setLineHeight(1.0)
   return font
 end
 
