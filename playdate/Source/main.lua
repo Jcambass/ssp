@@ -35,7 +35,6 @@ function setupMenuImage()
   local highScores = GetHighScores()
   local img = leaderboardImage:copy()
   gfx.pushContext(img)
-    gfx.setImageDrawMode(gfx.kDrawModeCopy)
     gfx.setColor(gfx.kColorBlack)
 
     if highScores[1].score ~= 0 then
@@ -49,7 +48,6 @@ function setupMenuImage()
     end
 
   gfx.popContext()
-  gfx.setImageDrawMode(gfx.kDrawModeInverted)
 
   pd.setMenuImage(img)
 end
