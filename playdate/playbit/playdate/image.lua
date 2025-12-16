@@ -16,14 +16,14 @@ function module.new(widthOrPath, height, bgcolor)
     
     -- Initialize with bgcolor (defaults to kColorClear = transparent)
     if bgcolor == playdate.graphics.kColorWhite then
-      -- Fill with white (inverted: use black RGB for white display color)
-      imageData:mapPixel(function(x, y)
-        return 0, 0, 0, 1
-      end)
-    elseif bgcolor == playdate.graphics.kColorBlack then
-      -- Fill with black (inverted: use white RGB for black display color)
+      -- Fill with white
       imageData:mapPixel(function(x, y)
         return 1, 1, 1, 1
+      end)
+    elseif bgcolor == playdate.graphics.kColorBlack then
+      -- Fill with black
+      imageData:mapPixel(function(x, y)
+        return 0, 0, 0, 1
       end)
     else
       bgcolor = playdate.graphics.kColorClear
