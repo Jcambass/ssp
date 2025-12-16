@@ -22,7 +22,7 @@ module.canvas = love.graphics.newCanvas()
 module.contextStack = {}
 -- shared quad to reduce gc
 module.quad = love.graphics.newQuad(0, 0, 1, 1, 1, 1)
-module.lastClearColor = module.colorWhite
+module.lastClearColor = module.colorBlack
 module.drawPattern = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
 local canvasScale = 1

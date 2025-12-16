@@ -11,6 +11,7 @@ local fadedRects = nil
 local function initializeFadedRects()
     if fadedRects then return end
     
+    print("=== Initializing faded rects ===")
     fadedRects = {}
     for i=0,1,0.01 do
         local fadedImage = gfx.image.new(400, 240)
@@ -18,9 +19,31 @@ local function initializeFadedRects()
             local filledRect = gfx.image.new(400, 240, gfx.kColorBlack)
             filledRect:drawFaded(0, 0, i, gfx.image.kDitherTypeBayer8x8)
         gfx.popContext()
+        
+        -- Debug: Sample some pixels to verify colors
+        if i == 0 or i == 0.5 or i == 1.0 then
+            print(string.format("Alpha %.2f - Sampling pixels:", i))
+            -- Sample a few pixels across the image
+            for py = 0, 240, 60 do
+                for px = 0, 400, 100 do
+                    local color = fadedImage:sample(px, py)
+                    local colorName = "UNKNOWN"
+                    if color == gfx.kColorWhite then
+                        colorName = "WHITE"
+                    elseif color == gfx.kColorBlack then
+                        colorName = "BLACK"
+                    elseif color == gfx.kColorClear then
+                        colorName = "CLEAR/TRANSPARENT"
+                    end
+                    print(string.format("  Pixel (%d,%d): %s (value=%s)", px, py, colorName, tostring(color)))
+                end
+            end
+        end
+        
         fadedRects[math.floor(i * 100)] = fadedImage
     end
     fadedRects[100] = gfx.image.new(400, 240, gfx.kColorBlack)
+    print("=== Faded rects initialized ===")
 end
 
 class('SceneManager').extends()
@@ -112,7 +135,25 @@ function SceneManager:fadeTransition(startValue, endValue)
 
     local transitionTimer = pd.timer.new(self.transitionTime, startValue, endValue, pd.easingFunctions.inOutCubic)
     transitionTimer.updateCallback = function(timer)
-        transitionSprite:setImage(self:getFadedImage(timer.value))
+        img = self:getFadedImage(timer.value)
+        if img then
+            transitionSprite:setImage(img)
+            -- Debug: Log transition state periodically
+            if math.random() < 0.05 then -- 5% chance to log
+                print(string.format("Transition alpha: %.2f, Image: %s", timer.value, tostring(img)))
+                -- Sample center pixel of the transition image
+                local centerColor = img:sample(200, 120)
+                local colorName = "UNKNOWN"
+                if centerColor == gfx.kColorWhite then
+                    colorName = "WHITE (UNEXPECTED!)"
+                elseif centerColor == gfx.kColorBlack then
+                    colorName = "BLACK"
+                elseif centerColor == gfx.kColorClear then
+                    colorName = "CLEAR/TRANSPARENT"
+                end
+                print(string.format("  Center pixel color: %s", colorName))
+            end
+        end
     end
     return transitionTimer
 end

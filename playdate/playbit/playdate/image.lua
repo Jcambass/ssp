@@ -119,7 +119,41 @@ function meta:clear(color)
 end
 
 function meta:sample(x, y)
-  error("[ERR] playdate.graphics.image:sample() is not yet implemented.")
+  -- For canvases, we need to read from the canvas data
+  local imageData
+  if self._canvas then
+    -- If this is a canvas-backed image, get the ImageData from the canvas
+    imageData = self._canvas:newImageData()
+  else
+    -- If this is a regular image, get the ImageData directly
+    imageData = self.data:getData()
+  end
+  
+  if not imageData then
+    return playdate.graphics.kColorClear
+  end
+  
+  -- Clamp coordinates to image bounds
+  local width, height = self:getSize()
+  if x < 0 or x >= width or y < 0 or y >= height then
+    return playdate.graphics.kColorClear
+  end
+  
+  -- Get the pixel color (RGBA)
+  local r, g, b, a = imageData:getPixel(x, y)
+  
+  -- If transparent, return kColorClear
+  if a < 0.5 then
+    return playdate.graphics.kColorClear
+  end
+  
+  -- Determine if it's white or black based on brightness
+  local brightness = (r + g + b) / 3
+  if brightness >= 0.5 then
+    return playdate.graphics.kColorWhite
+  else
+    return playdate.graphics.kColorBlack
+  end
 end
 
 function meta:drawRotated(x, y, angle, scale, yscale)
@@ -230,8 +264,6 @@ local function getDitherShader()
   if not ditherShader then
     ditherShader = love.graphics.newShader[[
       uniform float alpha;
-      uniform vec4 white;
-      uniform vec4 black;
       
       // Bayer 8x8 matrix (values 0-63)
       const float bayer8x8[64] = float[64](
@@ -274,13 +306,8 @@ local function getDitherShader()
           discard;
         }
         
-        // Otherwise, process the texture color through Playdate's color system
-        float saturation = rgb2hsv(vec3(texcolor)).z;
-        if (saturation >= 0.45) {
-          return white;
-        } else {
-          return black;
-        }
+        // Otherwise, return the texture color as-is
+        return texcolor;
       }
     ]]
   end
@@ -298,8 +325,6 @@ function meta:drawFaded(x, y, alpha, ditherType)
   local shader = getDitherShader()
   love.graphics.setShader(shader)
   shader:send("alpha", alpha)
-  shader:send("white", playbit.graphics.colorWhite)
-  shader:send("black", playbit.graphics.colorBlack)
   
   -- Draw with the dither shader
   love.graphics.setColor(1, 1, 1, 1)

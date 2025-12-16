@@ -18,7 +18,6 @@ function import(path)
   return require(path)
 end
 
-local firstFrame = true
 local windowWidth, windowHeight = playbit.graphics.getWindowSize()
 
 playbit.graphics.canvas:setFilter("nearest", "nearest")
@@ -27,7 +26,6 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 love.graphics.setLineWidth(1)
 love.graphics.setLineStyle("rough")
 
-playdate.graphics.setBackgroundColor(playdate.graphics.kColorWhite)
 playdate.graphics.setColor(playdate.graphics.kColorBlack)
 
 math.randomseed(os.time())
@@ -72,14 +70,6 @@ function love.draw()
   local c = playbit.graphics.lastClearColor
   love.graphics.clear(c.r, c.g, c.b, 1)
   
-  --[[ 
-    Love2d won't allow a canvas to be set outside of the draw function, so we need to do this on the first frame of draw.
-    Otherwise setting the bg color outside of playdate.update() won't be consistent with PD.
-  --]]
-  if firstFrame then
-    firstFrame = false
-  end
-
   -- love requires that this is set every loop
   love.graphics.setFont(playbit.graphics.activeFont.data)
 
