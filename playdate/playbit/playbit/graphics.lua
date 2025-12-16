@@ -47,10 +47,6 @@ module.shader = love.graphics.newShader("playdate/shader")
 --     }
 -- ]])
 module.drawOffset = { x = 0, y = 0}
-module.drawColorIndex = 1
-module.drawColor = module.colorWhite
-module.backgroundColorIndex = 0
-module.backgroundColor = module.colorBlack
 module.activeFont = {}
 module.contextStack = {}
 -- shared quad to reduce gc
@@ -89,7 +85,9 @@ function module.createRootContext()
   -- push main canvas as root context
   local contextInfo = {
     canvas = canvas,
-    drawMode = module.kDrawModeCopy
+    drawMode = module.kDrawModeCopy,
+    color = module.colorWhite,
+    backgroundColor = module.colorBlack,
   }
   
   module.pushContext(contextInfo)
@@ -105,6 +103,9 @@ function module.pushContext(contextInfo)
 
   -- update draw mode
   module.applyImageDrawMode(contextInfo.drawMode)
+
+  -- set colors
+  module.applyColor(contextInfo.color)
 end
 
 function module.popContext()
@@ -122,6 +123,9 @@ function module.popContext()
 
   -- update draw mode
   module.applyImageDrawMode(activeContext.drawMode)
+
+  -- set colors
+  module.applyColor(activeContext.color)
 end
 
 module.kDrawModeCopy = 0
@@ -153,6 +157,10 @@ function module.applyImageDrawMode(mode)
   else
     error("[ERR] Draw mode '"..mode.."' is not yet implemented.")
   end
+end
+
+function module.applyColor(c)
+  love.graphics.setColor(c[1], c[2], c[3], c[4])
 end
 
 --- Sets the scale of the canvas.
@@ -239,18 +247,6 @@ function module.setColors(white, black)
   module.colorBlack = black
   module.shader:send("white", white)
   module.shader:send("black", black)
-
-  if module.backgroundColorIndex == 1 then
-    module.backgroundColor = module.colorWhite
-  else
-    module.backgroundColor = module.colorBlack
-  end
-
-  if module.drawColorIndex == 1 then
-    module.drawColor = module.colorWhite
-  else
-    module.drawColor = module.colorBlack
-  end
 end
 
 function module.updateContext()
@@ -261,6 +257,7 @@ function module.updateContext()
   local activeContext = module.contextStack[#module.contextStack]
 
   module.applyImageDrawMode(activeContext.drawMode)
+  module.applyColor(activeContext.color)
 
   if not activeContext.image then
     return

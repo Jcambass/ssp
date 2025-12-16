@@ -45,31 +45,27 @@ end
 
 function module.setBackgroundColor(color)
   @@ASSERT(color == 1 or color == 0, "Only values of 0 (black) or 1 (white) are supported.")
-  playbit.graphics.backgroundColorIndex = color
   if color == 1 then
-    playbit.graphics.backgroundColor = playbit.graphics.colorWhite
+   playbit.graphics.peakContext().backgroundColor = playbit.graphics.colorWhite
   else
-    playbit.graphics.backgroundColor = playbit.graphics.colorBlack
+    playbit.graphics.peakContext().backgroundColor = playbit.graphics.colorBlack
   end
   -- don't actually set love's bg color here since doing so immediately sets the color, and this is not consistent with PD
 end
 
 function module.setColor(color)
   @@ASSERT(color == 1 or color == 0, "Only values of 0 (black) or 1 (white) are supported.")
-  playbit.graphics.drawColorIndex = color
   -- when drawing without a pattern, we must flip the pattern mask for white/black because of the way the shader draws patterns
   if color == 1 then
     local c = playbit.graphics.colorWhite
-    playbit.graphics.drawColor = c
     -- reset pattern, as per PD behavior
     module.setPattern({0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff})
-    love.graphics.setColor(c[1], c[2], c[3], c[4])
+    playbit.graphics.peakContext().color = c
   else
     local c = playbit.graphics.colorBlack
-    playbit.graphics.drawColor = c
     -- reset pattern, as per PD behavior
     module.setPattern({0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
-    love.graphics.setColor(c[1], c[2], c[3], c[4])
+    playbit.graphics.peakContext().color = c
   end
 end
 
@@ -94,7 +90,7 @@ end
 
 function module.clear(color)
   if not color then
-    local c = playbit.graphics.backgroundColor
+    local c = playbit.graphics.peakContext().backgroundColor
     love.graphics.clear(c[1], c[2], c[3], c[4])
     playbit.graphics.lastClearColor = c
   else
@@ -329,11 +325,13 @@ function module.pushContext(image)
   end
   
   previousContext = playbit.graphics.peakContext()
-  -- store canvas and inherit draw mode from current context
+  -- store canvas and inherit rest from current context
   local contextInfo = {
     canvas = image._canvas,
     image = image,
-    drawMode = previousContext.drawMode
+    drawMode = previousContext.drawMode,
+    color = previousContext.color,
+    backgroundColor = previousContext.backgroundColor,
   }
   
   playbit.graphics.pushContext(contextInfo)

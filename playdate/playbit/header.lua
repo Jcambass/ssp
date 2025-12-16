@@ -24,8 +24,6 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 love.graphics.setLineWidth(1)
 love.graphics.setLineStyle("rough")
 
-playdate.graphics.setColor(playdate.graphics.kColorBlack)
-
 math.randomseed(os.time())
 
 local font = playdate.graphics.font.new("fonts/Phozon/Phozon")
@@ -89,7 +87,6 @@ function love.draw()
   love.graphics.setShader()
 
   -- always render pure white so its not tinted
-  local r, g, b = love.graphics.getColor()
   love.graphics.setColor(1, 1, 1, 1)
 
   -- draw canvas to screen
@@ -98,7 +95,7 @@ function love.draw()
   love.graphics.draw(rootContext.canvas, x, y, 0, currentCanvasScale, currentCanvasScale)
 
   -- reset back to set color
-  love.graphics.setColor(r, g, b, 1)
+  playbit.graphics.applyColor(rootContext.color)
 
   -- update emulated input
   playdate.updateInput()
