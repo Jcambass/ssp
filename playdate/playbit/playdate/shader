@@ -9,8 +9,24 @@ extern int pattern[64];
 extern vec4 white = vec4(176.0f / 255.0f, 174.0f / 255.0f, 167.0f / 255.0f, 1);
 extern vec4 black = vec4( 49.0f / 255.0f,  47.0f / 255.0f,  40.0f / 255.0f, 1);
 
+// Dither parameters
+extern bool ditherEnabled = false;
+extern float ditherAlpha = 1.0;
+
 const vec4 TRANSPARENT =  vec4(0, 0, 0, 0);
 const vec4 DEBUG =        vec4(1, 0, 0, 0.5); // used when rendering via playdate.debugDraw()
+
+// Bayer 8x8 matrix (values 0-63)
+const float bayer8x8[64] = float[64](
+   0.0, 32.0,  8.0, 40.0,  2.0, 34.0, 10.0, 42.0,
+  48.0, 16.0, 56.0, 24.0, 50.0, 18.0, 58.0, 26.0,
+  12.0, 44.0,  4.0, 36.0, 14.0, 46.0,  6.0, 38.0,
+  60.0, 28.0, 52.0, 20.0, 62.0, 30.0, 54.0, 22.0,
+   3.0, 35.0, 11.0, 43.0,  1.0, 33.0,  9.0, 41.0,
+  51.0, 19.0, 59.0, 27.0, 49.0, 17.0, 57.0, 25.0,
+  15.0, 47.0,  7.0, 39.0, 13.0, 45.0,  5.0, 37.0,
+  63.0, 31.0, 55.0, 23.0, 61.0, 29.0, 53.0, 21.0
+);
 
 vec3 rgb2hsv(vec3 c)
 {
@@ -26,6 +42,28 @@ vec3 rgb2hsv(vec3 c)
 vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
 {
   vec4 outputcolor = Texel(tex, tex_coords) * color;
+  
+  // Apply dithering if enabled (before any other processing)
+  if (ditherEnabled) {
+    if (outputcolor.a == 0.0) {
+      return TRANSPARENT;
+    }
+    
+    // Get position in 8x8 Bayer matrix
+    int x = int(mod(screen_coords.x, 8.0));
+    int y = int(mod(screen_coords.y, 8.0));
+    int index = y * 8 + x;
+    
+    // Get threshold from Bayer matrix
+    float threshold = bayer8x8[index] / 63.0;
+    
+    // If alpha is less than threshold, discard this pixel (transparent)
+    if (ditherAlpha < threshold) {
+      discard;
+    }
+    // Continue with normal color processing below
+  }
+  
   if (mode == 1)                          // ---------- "fillWhite"
   {
     if (outputcolor.a > 0) 
