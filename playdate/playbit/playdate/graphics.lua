@@ -332,23 +332,36 @@ function module.pushContext(image)
     image._canvas = love.graphics.newCanvas(image:getSize())
   end
   
+  -- Store the current draw mode
+  local contextInfo = {
+    image = image,
+    drawMode = playbit.graphics.drawMode
+  }
+  
   -- push context
-  table.insert(playbit.graphics.contextStack, image)
+  table.insert(playbit.graphics.contextStack, contextInfo)
 
   -- update current render target
   love.graphics.setCanvas(image._canvas)
+  
+  -- Reset draw mode to copy for drawing into the context
+  module.setImageDrawMode(module.kDrawModeCopy)
 end
 
 function module.popContext()
   @@ASSERT(#playbit.graphics.contextStack > 0, "No pushed context.")
 
-  -- pop context
-  table.remove(playbit.graphics.contextStack)
+  -- pop context and restore draw mode
+  local contextInfo = table.remove(playbit.graphics.contextStack)
+  
   -- update current render target
   if #playbit.graphics.contextStack == 0 then
     love.graphics.setCanvas(playbit.graphics.canvas)
   else
     local activeContext = playbit.graphics.contextStack[#playbit.graphics.contextStack]
-    love.graphics.setCanvas(activeContext._canvas)
+    love.graphics.setCanvas(activeContext.image._canvas)
   end
+  
+  -- Restore the previous draw mode
+  module.setImageDrawMode(contextInfo.drawMode)
 end

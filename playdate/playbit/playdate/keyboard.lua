@@ -61,6 +61,28 @@ function module.hide()
   module.keyboardAnimatingCallback = nil
 end
 
+function module._abort()
+    if not isVisible then
+        return
+    end
+  
+    module.text = initialText
+    isVisible = false
+    love.keyboard.setTextInput(false)
+    
+    -- Call callback with selectedOk = false
+    local callback = module.keyboardWillHideCallback
+    if callback then
+      callback(false)
+    end
+    
+    -- Clear callbacks after canceling to match Playdate behavior
+    module.keyboardDidShowCallback = nil
+    module.textChangedCallback = nil
+    module.keyboardWillHideCallback = nil
+    module.keyboardAnimatingCallback = nil
+end
+
 function module.isVisible()
   return isVisible
 end
@@ -106,21 +128,7 @@ function module._handleKeyPressed(key)
   if key == "return" or key == "kpenter" then
     module.hide()
   elseif key == "escape" then
-    module.text = initialText
-    isVisible = false
-    love.keyboard.setTextInput(false)
-    
-    -- Call callback with selectedOk = false
-    local callback = module.keyboardWillHideCallback
-    if callback then
-      callback(false)
-    end
-    
-    -- Clear callbacks after canceling to match Playdate behavior
-    module.keyboardDidShowCallback = nil
-    module.textChangedCallback = nil
-    module.keyboardWillHideCallback = nil
-    module.keyboardAnimatingCallback = nil
+    module._abort()
   elseif key == "backspace" then
     module._handleBackspace()
   end

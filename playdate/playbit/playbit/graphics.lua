@@ -137,7 +137,8 @@ function module.updateContext()
     return
   end
 
-  local activeContext = module.contextStack[#module.contextStack]
+  local contextInfo = module.contextStack[#module.contextStack]
+  local activeContext = contextInfo.image
 
   -- love2d doesn't allow calling newImageData() when canvas is active
   love.graphics.setCanvas()
