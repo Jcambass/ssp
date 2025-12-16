@@ -8,13 +8,28 @@ meta.__index = meta
 module.__index = meta
 
 function module.new(widthOrPath, height, bgcolor)
-  @@ASSERT(bgcolor == nil, "[ERR] Parameter bgcolor is not yet implemented.")
   local img = setmetatable({}, meta)
 
   if height then
     -- creating empty image with dimensions
     local imageData = love.image.newImageData(widthOrPath, height)
-    img.data = love.graphics.newImage(imageData)  
+    
+    -- Initialize with bgcolor (defaults to kColorClear = transparent)
+    if bgcolor == playdate.graphics.kColorWhite then
+      -- Fill with white
+      imageData:mapPixel(function(x, y)
+        return 1, 1, 1, 1
+      end)
+    elseif bgcolor == playdate.graphics.kColorBlack then
+      -- Fill with black
+      imageData:mapPixel(function(x, y)
+        return 0, 0, 0, 1
+      end)
+    end
+    -- kColorClear or nil defaults to transparent (already is)
+    
+    img.data = love.graphics.newImage(imageData)
+    img._bgcolor = bgcolor -- Store bgcolor for canvas initialization
   else
     -- creating image from file
     img.data = love.graphics.newImage(widthOrPath..".png")  
@@ -210,12 +225,20 @@ end
 
 function meta:drawFaded(x, y, alpha, ditherType)
   -- Draw image with alpha transparency
-  -- ditherType is ignored in Love2D as we can use real alpha blending
-  love.graphics.push()
+  -- On Playdate, this uses dithering to simulate transparency
+  -- In Love2D, we can use real alpha blending which looks similar
+  
+  -- Save current state
+  local r, g, b, a = love.graphics.getColor()
+  
+  -- Draw directly with alpha, bypassing the draw() method which resets color
   love.graphics.setColor(1, 1, 1, alpha)
-  self:draw(x, y)
-  love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.pop()
+  love.graphics.draw(self.data, x, y, 0, 1, 1)
+  
+  -- Restore color
+  love.graphics.setColor(r, g, b, a)
+  
+  playbit.graphics.updateContext()
 end
 
 function meta:fadedImage(alpha, ditherType)

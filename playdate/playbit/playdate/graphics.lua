@@ -330,6 +330,21 @@ function module.pushContext(image)
   -- create canvas if it doesn't exist
   if not image._canvas then
     image._canvas = love.graphics.newCanvas(image:getSize())
+    
+    -- Initialize canvas with the image's background color
+    local prevCanvas = love.graphics.getCanvas()
+    love.graphics.setCanvas(image._canvas)
+    
+    if image._bgcolor == playdate.graphics.kColorWhite then
+      love.graphics.clear(1, 1, 1, 1)
+    elseif image._bgcolor == playdate.graphics.kColorBlack then
+      love.graphics.clear(0, 0, 0, 1)
+    else
+      -- kColorClear or nil: clear to transparent
+      love.graphics.clear(0, 0, 0, 0)
+    end
+    
+    love.graphics.setCanvas(prevCanvas)
   end
   
   -- Store the current draw mode
