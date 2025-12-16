@@ -2,8 +2,13 @@ import "consts"
 import "actors/player"
 import "CoreLibs/animation"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 local explosionImageTable = gfx.imagetable.new("Images/animations/smoke")
 

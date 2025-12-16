@@ -1,8 +1,13 @@
 import "consts"
 import "background/planet"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 
 local planet1Image = gfx.image.new("Images/planet-1")

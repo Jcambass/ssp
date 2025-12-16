@@ -1,2 +1,4 @@
 *.pdx
 *.pdx.zip
+_love2d/
+_pdx/

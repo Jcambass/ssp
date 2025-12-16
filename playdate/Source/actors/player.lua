@@ -6,8 +6,13 @@ import "weapons/hammer"
 import "weapons/ratata"
 import "CoreLibs/crank"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 class("PlayerInView").extends(gfx.sprite)
 

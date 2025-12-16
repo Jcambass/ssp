@@ -5,8 +5,13 @@ import "actors/enemySpawner"
 import "background/planetSpawner"
 import "background/starSpawner"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 BOTTOM_BAR_HEIGHT = 20
 PLAYER_AREA_HEIGHT = 240 - BOTTOM_BAR_HEIGHT

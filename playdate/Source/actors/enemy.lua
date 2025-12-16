@@ -4,8 +4,13 @@ import "animations/explosion"
 import "weapons/stomp"
 import "healthBar"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 class("Enemy").extends(gfx.sprite)
 

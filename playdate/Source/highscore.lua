@@ -1,5 +1,10 @@
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 function GetHighScores()
   local t = pd.datastore.read("highscores")

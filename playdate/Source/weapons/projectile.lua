@@ -1,8 +1,13 @@
 import "consts"
 import "animations/explosion"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 class("Projectile").extends(gfx.sprite)
 

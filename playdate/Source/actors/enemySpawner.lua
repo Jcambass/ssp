@@ -5,8 +5,13 @@ import "weapons/grim"
 import "weapons/hammer"
 import "weapons/ratata"
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 local bigShipImage = gfx.image.new("Images/ships/BigShip-white")
 assert( bigShipImage ) -- make sure the image was where we thought

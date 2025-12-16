@@ -1,6 +1,11 @@
 
+!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+!else
+local pd = playdate
+local gfx = playdate.graphics
+!end
 
 local fadedRects = {}
 for i=0,1,0.01 do
