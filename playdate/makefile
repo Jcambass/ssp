@@ -2,6 +2,7 @@
 .PHONY: build
 .PHONY: run
 .PHONY: copy
+.PHONY: pd
 
 SDK = $(shell egrep '^\s*SDKRoot' ~/.Playdate/config | head -n 1 | cut -c9-)
 SDKBIN=$(SDK)/bin
@@ -12,6 +13,11 @@ SIM=Playdate Simulator
 build: clean compile run
 
 run: open
+
+pd:
+	lua build/playdate-release.lua
+	pdc _pdx SSP.pdx
+	open -a '$(SDKBIN)/$(SIM).app/Contents/MacOS/$(SIM)' SSP.pdx
 
 clean:
 	rm -rf '$(GAME).pdx'
