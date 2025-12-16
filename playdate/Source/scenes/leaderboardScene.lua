@@ -17,17 +17,12 @@ class('LeaderboardScene').extends(gfx.sprite)
 
 function LeaderboardScene:init()
   LeaderboardScene.super.init(self)
-  
-  print("LeaderboardScene:init called")
-  print("leaderboardImage:", leaderboardImage)
-  
+    
   local text = "Press the B button\nto restart"
 
   local highScores = GetHighScores()
-  print("Got high scores:", highScores)
   
   local img = leaderboardImage:copy()
-  print("Copied image:", img)
   
   gfx.pushContext(img)
     gfx.setColor(gfx.kColorBlack)
@@ -46,14 +41,11 @@ function LeaderboardScene:init()
 
   gfx.popContext()
   
-  print("About to setImage")
   self:setImage(img)
-  print("Image set, img =", img, "self.image =", self.image)
   
   self:moveTo(200, 120)
 
   self:add()
-  print("LeaderboardScene sprite added")
 end
 
 function LeaderboardScene:update()

@@ -335,9 +335,6 @@ function module.pushContext(image)
     local prevCanvas = love.graphics.getCanvas()
     love.graphics.setCanvas(image._canvas)
     
-    -- Use alpha blend mode for proper transparency compositing
-    love.graphics.setBlendMode("alpha")
-    
     if image._bgcolor == playdate.graphics.kColorWhite then
       love.graphics.clear(1, 1, 1, 1)
     elseif image._bgcolor == playdate.graphics.kColorBlack then
@@ -361,9 +358,6 @@ function module.pushContext(image)
 
   -- update current render target
   love.graphics.setCanvas(image._canvas)
-  
-  -- Set proper blend mode for canvas drawing
-  love.graphics.setBlendMode("alpha")
   
   -- Reset draw mode to copy for drawing into the context
   module.setImageDrawMode(module.kDrawModeCopy)

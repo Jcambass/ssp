@@ -30,15 +30,12 @@ function SceneManager:switchScene(scene, ...)
 end
 
 function SceneManager:loadNewScene()
-    print("loadNewScene called")
     self:cleanupScene()
-    print("Scene cleaned up, creating new scene")
     !if PLAYDATE then
     self.newScene(table.unpack(self.sceneArgs))
     !else
     self.newScene(unpack(self.sceneArgs))
     !end
-    print("New scene created")
 end
 
 function SceneManager:cleanupScene()
@@ -49,21 +46,15 @@ function SceneManager:cleanupScene()
 end
 
 function SceneManager:startTransition()
-    print("startTransition called")
     local allSprites = gfx.sprite.getAllSprites()
-    print("Halting " .. #allSprites .. " sprites")
     for i=1,#allSprites do
         allSprites[i].halted = true
     end
 
-    print("Created fade transition timer")
     local transitionTimer = self:fadeTransition(0, 1, function()
-        print("First fade complete, loading new scene")
         self:loadNewScene()
 
-        print("Created second fade transition timer")
         transitionTimer = self:fadeTransition(1, 0, function()
-        print("Second fade complete, transition done")
             self.transitioning = false
             -- Temp fix to resolve bug with sprite artifacts/smearing after transition
             for i=1,#allSprites do
@@ -111,7 +102,7 @@ end
 function SceneManager:getFadedImage(alpha)
     local fadedImage = gfx.image.new(400, 240, gfx.kColorClear)
     gfx.pushContext(fadedImage)
-        local filledRect = gfx.image.new(400, 240, gfx.kColorBlack)
+        local filledRect = gfx.image.new(400, 240, gfx.kColorWhite)
         filledRect:drawFaded(0, 0, alpha, gfx.image.kDitherTypeBayer8x8)
     gfx.popContext()
     return fadedImage

@@ -78,7 +78,7 @@ function love.draw()
 
   -- main update
   playdate.update()
-
+  
   -- debug draw
   if playdate.debugDraw then
     playbit.graphics.shader:send("debugDraw", true)

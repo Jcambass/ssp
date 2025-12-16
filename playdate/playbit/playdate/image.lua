@@ -31,7 +31,6 @@ function module.new(widthOrPath, height, bgcolor)
     -- kColorClear or nil defaults to transparent (already is)
     
     img.data = love.graphics.newImage(imageData)
-    img._imageData = imageData -- Store imageData for sampling
     img._bgcolor = bgcolor -- Store bgcolor for canvas initialization
   else
     -- creating image from file
@@ -123,45 +122,7 @@ function meta:clear(color)
 end
 
 function meta:sample(x, y)
-  -- For canvases, we need to read from the canvas data
-  local imageData
-  if self._canvas then
-    -- If this is a canvas-backed image, get the ImageData from the canvas
-    imageData = self._canvas:newImageData()
-  elseif self._imageData then
-    -- If this image was created with dimensions, we stored the imageData
-    imageData = self._imageData
-  else
-    -- For file-based images without canvas, we can't sample
-    -- Return kColorClear as a fallback
-    return playdate.graphics.kColorClear
-  end
-  
-  if not imageData then
-    return playdate.graphics.kColorClear
-  end
-  
-  -- Clamp coordinates to image bounds
-  local width, height = self:getSize()
-  if x < 0 or x >= width or y < 0 or y >= height then
-    return playdate.graphics.kColorClear
-  end
-  
-  -- Get the pixel color (RGBA)
-  local r, g, b, a = imageData:getPixel(x, y)
-  
-  -- If transparent, return kColorClear
-  if a < 0.5 then
-    return playdate.graphics.kColorClear
-  end
-  
-  -- Determine if it's white or black based on brightness
-  local brightness = (r + g + b) / 3
-  if brightness >= 0.5 then
-    return playdate.graphics.kColorWhite
-  else
-    return playdate.graphics.kColorBlack
-  end
+  error("[ERR] playdate.graphics.image:sample() is not yet implemented.")
 end
 
 function meta:drawRotated(x, y, angle, scale, yscale)
@@ -318,23 +279,17 @@ function meta:drawFaded(x, y, alpha, ditherType)
   
   -- Save current state
   local currentShader = love.graphics.getShader()
-  local r, g, b, a = love.graphics.getColor()
-  local blendMode, blendAlphaMode = love.graphics.getBlendMode()
   
   -- Use dither shader with proper blend mode
   local shader = getDitherShader()
   love.graphics.setShader(shader)
-  love.graphics.setBlendMode("alpha")
   shader:send("alpha", alpha)
-  
+
   -- Draw with the dither shader
-  love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.draw(self.data, x, y, 0, 1, 1)
+  love.graphics.draw(self.data, x, y)
   
   -- Restore state
-  love.graphics.setBlendMode(blendMode, blendAlphaMode)
   love.graphics.setShader(currentShader)
-  love.graphics.setColor(r, g, b, a)
   
   playbit.graphics.updateContext()
 end
