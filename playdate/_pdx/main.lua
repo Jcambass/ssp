@@ -83,6 +83,8 @@ function playdate.update()
     gameInitialized = true
   end
   
+
   gfx.sprite.update()
+
   pd.timer.updateTimers()
 end

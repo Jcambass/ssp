@@ -44,8 +44,13 @@ function SceneManager:switchScene(scene, ...)
 end
 
 function SceneManager:loadNewScene()
+    print("loadNewScene called")
     self:cleanupScene()
+    print("Scene cleaned up, creating new scene")
+    
     self.newScene(table.unpack(self.sceneArgs))
+    
+    print("New scene created")
 end
 
 function SceneManager:cleanupScene()
@@ -56,19 +61,25 @@ function SceneManager:cleanupScene()
 end
 
 function SceneManager:startTransition()
+    print("startTransition called")
     local allSprites = gfx.sprite.getAllSprites()
+    print("Halting " .. #allSprites .. " sprites")
     for i=1,#allSprites do
         allSprites[i].halted = true
     end
 
     local transitionTimer = self:fadeTransition(0, 1)
+    print("Created fade transition timer")
     --local transitionTimer = self:wipeTransition(0, 400)
 
     transitionTimer.timerEndedCallback = function()
+        print("First fade complete, loading new scene")
         self:loadNewScene()
         transitionTimer = self:fadeTransition(1, 0)
+        print("Created second fade transition timer")
         -- transitionTimer = self:wipeTransition(400, 0)
         transitionTimer.timerEndedCallback = function()
+            print("Second fade complete, transition done")
             self.transitioning = false
             self.transitionSprite:remove()
             -- Temp fix to resolve bug with sprite artifacts/smearing after transition

@@ -8,6 +8,8 @@ local gfx <const> = playdate.graphics
 class("HealthBar").extends(gfx.sprite)
 
 function HealthBar:init(fullHealth, x, y)
+  HealthBar.super.init(self)
+  
   self.fullHealth = fullHealth
 
   self.height = 4

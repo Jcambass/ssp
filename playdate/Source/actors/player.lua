@@ -17,6 +17,8 @@ local gfx = playdate.graphics
 class("PlayerInView").extends(gfx.sprite)
 
 function PlayerInView:init(playerSpriteSizeX)
+  PlayerInView.super.init(self)
+  
   self:setSize(playerSpriteSizeX - 12, PLAYER_AREA_HEIGHT * 2)
   self:setCollideRect(0, 0, self:getSize())
   self:setZIndex(Layers.Actors)
@@ -28,6 +30,8 @@ end
 class("Player").extends(gfx.sprite)
 
 function Player:init(x, y)
+  Player.super.init(self)
+  
   local playerImage = gfx.image.new("Images/player")
   assert( playerImage ) -- make sure the image was where we thought
 
@@ -45,6 +49,7 @@ function Player:init(x, y)
   self.yOffset = playerSpriteSizeY / 2
 
   self.enemyTarget = PlayerInView(playerSpriteSizeX)
+  self.enemyTarget:moveTo(x, y)
 
   self.speed = 4
   self.level = 1

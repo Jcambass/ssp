@@ -12,6 +12,8 @@ local gfx = playdate.graphics
 class("BottomBar").extends(gfx.sprite)
 
 function BottomBar:init(barHeight)
+  BottomBar.super.init(self)
+  
   self.barHeight = barHeight
   self.barWidth = 400
   self.bottomScreen = 240

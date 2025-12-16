@@ -8,6 +8,8 @@ local gfx <const> = playdate.graphics
 class("Planet").extends(gfx.sprite)
 
 function Planet:init(x, y, speed, planetImage)
+  Planet.super.init(self)
+  
   self:moveTo(x, y)
   self:setImage(planetImage)
   self:setZIndex(Layers.Planets)

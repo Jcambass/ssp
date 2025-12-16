@@ -13,6 +13,8 @@ assert(leaderboardImage) -- make sure the image was where we thought
 class('LeaderboardScene').extends(gfx.sprite)
 
 function LeaderboardScene:init()
+  LeaderboardScene.super.init(self)
+  
   local text = "Press the B button\nto restart"
 
   local highScores = GetHighScores()

@@ -8,6 +8,8 @@ local gfx <const> = playdate.graphics
 class("MessageOverlay").extends(gfx.sprite)
 
 function MessageOverlay:init(x, y)
+  MessageOverlay.super.init(self)
+  
   self:moveTo(x, y)
   self:setZIndex(Layers.UI)
   self:add()

@@ -11,6 +11,8 @@ local explosionImageTable = gfx.imagetable.new("Images/animations/smoke")
 class("Explosion").extends(gfx.sprite)
 
 function Explosion:init(x, y, nr)
+  Explosion.super.init(self)
+  
   -- Setting the last argument to false makes the animation stop on the last frame
   local frameTime = 50
   local animationLoop = gfx.animation.loop.new(frameTime, explosionImageTable, false)

@@ -12,6 +12,8 @@ local gfx <const> = playdate.graphics
 class('GameOverScene').extends(gfx.sprite)
 
 function GameOverScene:init(score)
+  GameOverScene.super.init(self)
+  
   self.score = score
   self.newHighScore = false
 

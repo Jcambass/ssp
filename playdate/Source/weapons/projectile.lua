@@ -12,6 +12,8 @@ local gfx = playdate.graphics
 class("Projectile").extends(gfx.sprite)
 
 function Projectile:init(projectileImage, x, y, speed, damage, pushback, playerOriginated)
+  Projectile.super.init(self)
+  
   self.playerOriginated = playerOriginated
 
   local projectileImageX, projectileImageY = projectileImage:getSize()
@@ -53,8 +55,8 @@ end
 
 function Projectile:updatePlayerProjectile()
   local actualX, actualY, collisions, length = self:moveWithCollisions(self.x, self.y - self.speed)
-  if length > 0 then
-    for index, collision in pairs(collisions) do
+  if #collisions > 0 then
+    for index, collision in ipairs(collisions) do
       local collidedObject = collision['other']
       if collidedObject:isa(Enemy) then
         collidedObject:hit(self.damage, self.pushback)
@@ -68,8 +70,8 @@ end
 
 function Projectile:updateEnemyProjectile()
   local actualX, actualY, collisions, length = self:moveWithCollisions(self.x, self.y + self.speed)
-  if length > 0 then
-    for index, collision in pairs(collisions) do
+  if #collisions > 0 then
+    for index, collision in ipairs(collisions) do
       local collidedObject = collision['other']
       if collidedObject:isa(Player) then
         NOTIFICATION_CENTER:notify("decrement_player_health", self.damage)

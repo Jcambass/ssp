@@ -20,6 +20,8 @@ PLAYER_AREA_WIDTH = 400
 class('GameScene').extends(gfx.sprite)
 
 function GameScene:init()
+  GameScene.super.init(self)
+  
   self.messageOverlay = MessageOverlay(200, 120)
 
   self.bottomBar = BottomBar(BOTTOM_BAR_HEIGHT)
@@ -37,5 +39,7 @@ function GameScene:init()
 end
 
 function GameScene:update()
-
+  if self.halted then
+    return
+  end
 end

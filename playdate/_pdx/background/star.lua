@@ -8,6 +8,8 @@ local gfx <const> = playdate.graphics
 class("Star").extends(gfx.sprite)
 
 function Star:init(x, y, speed, image)
+  Star.super.init(self)
+  
   self:moveTo(x, y)
   self:setImage(image)
   self:setZIndex(Layers.Stars)

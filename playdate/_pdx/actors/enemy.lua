@@ -12,6 +12,8 @@ local gfx <const> = playdate.graphics
 class("Enemy").extends(gfx.sprite)
 
 function Enemy:init(x, y, enemyData)
+  Enemy.super.init(self)
+  
   self:setImage(enemyData.image)
   self:setZIndex(Layers.Actors)
   self:moveTo(x, y)
@@ -32,8 +34,8 @@ function Enemy:init(x, y, enemyData)
   local projectileSize = 3
   local projectileImage = gfx.image.new(projectileSize * 2, projectileSize * 2)
   gfx.pushContext(projectileImage)
-    gfx.setColor(gfx.kColorWhite)
-    gfx.drawCircleAtPoint(projectileSize, projectileSize, projectileSize)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillCircleAtPoint(projectileSize, projectileSize, projectileSize)
   gfx.popContext()
 
   if enemyData.weaponClass then
@@ -74,8 +76,8 @@ function Enemy:update()
     local actualX, actualY, collisions, length = self:moveWithCollisions(self.x, self.y + moveByY)
     self.healthBar:moveToInContext(actualX, actualY)
 
-    if length > 0 then
-      for index, collision in pairs(collisions) do
+    if #collisions > 0 then
+      for index, collision in ipairs(collisions) do
         local collidedObject = collision['other']
         if collidedObject:isa(Player) then
           self:remove()
