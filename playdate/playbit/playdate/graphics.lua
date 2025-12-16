@@ -336,12 +336,12 @@ function module.pushContext(image)
     love.graphics.setCanvas(image._canvas)
     
     if image._bgcolor == playdate.graphics.kColorWhite then
-      love.graphics.clear(1, 1, 1, 1)
+      love.graphics.clear(playbit.graphics.COLOR_WHITE[1], playbit.graphics.COLOR_WHITE[2], playbit.graphics.COLOR_WHITE[3], playbit.graphics.COLOR_WHITE[4])
     elseif image._bgcolor == playdate.graphics.kColorBlack then
-      love.graphics.clear(0, 0, 0, 1)
+      love.graphics.clear(playbit.graphics.COLOR_BLACK[1], playbit.graphics.COLOR_BLACK[2], playbit.graphics.COLOR_BLACK[3], playbit.graphics.COLOR_BLACK[4])
     else
       -- kColorClear or nil: clear to transparent
-      love.graphics.clear(0, 0, 0, 0)
+      love.graphics.clear(playbit.graphics.COLOR_TRANSPARENT[1], playbit.graphics.COLOR_TRANSPARENT[2], playbit.graphics.COLOR_TRANSPARENT[3], playbit.graphics.COLOR_TRANSPARENT[4])
     end
     
     love.graphics.setCanvas(prevCanvas)

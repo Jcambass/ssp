@@ -7,9 +7,11 @@ playbit.graphics = module
 module.COLOR_WHITE = { 176 / 255, 174 / 255, 167 / 255, 1 }
 -- #312f28
 module.COLOR_BLACK = { 49 / 255, 47 / 255, 40 / 255, 1 }
+module.COLOR_TRANSPARENT = { 0, 0, 0, 0 }
 
 module.colorWhite = module.COLOR_WHITE
 module.colorBlack = module.COLOR_BLACK
+module.colorTransparent = module.COLOR_TRANSPARENT
 module.shader = love.graphics.newShader("playdate/shader")
 module.drawOffset = { x = 0, y = 0}
 module.drawColorIndex = 1
@@ -22,7 +24,7 @@ module.canvas = love.graphics.newCanvas()
 module.contextStack = {}
 -- shared quad to reduce gc
 module.quad = love.graphics.newQuad(0, 0, 1, 1, 1, 1)
-module.lastClearColor = module.colorBlack
+module.lastClearColor = module.colorWhite
 module.drawPattern = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 
 local canvasScale = 1

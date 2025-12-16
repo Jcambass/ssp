@@ -18,17 +18,20 @@ function module.new(widthOrPath, height, bgcolor)
     if bgcolor == playdate.graphics.kColorWhite then
       -- Fill with white
       imageData:mapPixel(function(x, y)
-        return 1, 1, 1, 1
+        return playbit.graphics.COLOR_WHITE[1], playbit.graphics.COLOR_WHITE[2], playbit.graphics.COLOR_WHITE[3], playbit.graphics.COLOR_WHITE[4]
       end)
     elseif bgcolor == playdate.graphics.kColorBlack then
       -- Fill with black
       imageData:mapPixel(function(x, y)
-        return 0, 0, 0, 1
+        return playbit.graphics.COLOR_BLACK[1], playbit.graphics.COLOR_BLACK[2], playbit.graphics.COLOR_BLACK[3], playbit.graphics.COLOR_BLACK[4]
       end)
     else
+      -- kColorClear or nil defaults to transparent (already is)
+       imageData:mapPixel(function(x, y)
+        return playbit.graphics.COLOR_TRANSPARENT[1], playbit.graphics.COLOR_TRANSPARENT[2], playbit.graphics.COLOR_TRANSPARENT[3], playbit.graphics.COLOR_TRANSPARENT[4]
+      end)
       bgcolor = playdate.graphics.kColorClear
     end
-    -- kColorClear or nil defaults to transparent (already is)
     
     img.data = love.graphics.newImage(imageData)
     img._bgcolor = bgcolor -- Store bgcolor for canvas initialization

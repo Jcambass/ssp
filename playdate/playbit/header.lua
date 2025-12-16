@@ -65,9 +65,12 @@ function love.draw()
   -- render to canvas to allow 2x scaling
   love.graphics.setCanvas(playbit.graphics.canvas)
   love.graphics.setShader(playbit.graphics.shader)
-
+  playbit.graphics.shader:send("white", playbit.graphics.colorWhite)
+  playbit.graphics.shader:send("black", playbit.graphics.colorBlack)
+  playbit.graphics.shader:send("transparent", playbit.graphics.colorTransparent)
+  
   -- Clear the canvas every frame with black color (Playdate default)
-  love.graphics.clear(0, 0, 0, 1)
+  love.graphics.clear(playbit.graphics.COLOR_BLACK[1], playbit.graphics.COLOR_BLACK[2], playbit.graphics.COLOR_BLACK[3], playbit.graphics.COLOR_BLACK[4])
   
   -- love requires that this is set every loop
   love.graphics.setFont(playbit.graphics.activeFont.data)

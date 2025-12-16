@@ -6,14 +6,13 @@
 extern int mode;
 extern bool debugDraw;
 extern int pattern[64];
-extern vec4 white = vec4(176.0f / 255.0f, 174.0f / 255.0f, 167.0f / 255.0f, 1);
-extern vec4 black = vec4( 49.0f / 255.0f,  47.0f / 255.0f,  40.0f / 255.0f, 1);
-
+extern vec4 white;
+extern vec4 black;
+extern vec4 transparent;
 // Dither parameters
 extern bool ditherEnabled = false;
 extern float ditherAlpha = 1.0;
 
-const vec4 TRANSPARENT =  vec4(0, 0, 0, 0);
 const vec4 DEBUG =        vec4(1, 0, 0, 0.5); // used when rendering via playdate.debugDraw()
 
 // Bayer 8x8 matrix (values 0-63)
@@ -46,7 +45,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
   // Apply dithering if enabled (before any other processing)
   if (ditherEnabled) {
     if (outputcolor.a == 0.0) {
-      return TRANSPARENT;
+      return transparent;
     }
     
     // Get position in 8x8 Bayer matrix
@@ -59,7 +58,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
     
     // If alpha is less than threshold, discard this pixel (transparent)
     if (ditherAlpha < threshold) {
-      discard;
+      return transparent;
     }
     // Continue with normal color processing below
   }
@@ -81,7 +80,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
     }
     else
     {
-      return TRANSPARENT;
+      return transparent;
     }
   }
   else if (mode == 2)                     // ---------- "fillBlack"
@@ -101,7 +100,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
     }
     else
     {
-      return TRANSPARENT;
+      return transparent;
     }
   }
   // else if (mode == 2)                  // ---------- "XOR"
@@ -125,7 +124,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
       float brightness = (outputcolor.r + outputcolor.g + outputcolor.b) / 3.0;
       if (brightness >= 0.5)
       {
-        return TRANSPARENT;
+        return transparent;
       }
       else
       {
@@ -137,7 +136,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
     else
     {
       // transparent pixel
-      return TRANSPARENT;
+      return transparent;
     }
   }
   // else if (mode == 5)                  // ---------- "blackTransparent"
@@ -172,7 +171,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
     else
     {
       // transparent pixel
-      return TRANSPARENT;
+      return transparent;
     }
   }
   else if (mode == 7)                     // ---------- ???
@@ -234,7 +233,7 @@ vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
     else
     {
       // transparent pixel
-      return TRANSPARENT;
+      return transparent;
     }
   }
 }
