@@ -1,5 +1,5 @@
 import "consts"
-import "scenes/gameScene"
+-- import "scenes/gameScene" -- Circular dependency, GameScene is global
 
 !if PLAYDATE then
 local pd <const> = playdate

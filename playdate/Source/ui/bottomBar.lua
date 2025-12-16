@@ -1,4 +1,4 @@
-import "scenes/gameOverScene"
+-- import "scenes/gameOverScene" -- Circular dependency, GameOverScene is global
 import "screenShake"
 
 !if PLAYDATE then

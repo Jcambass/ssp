@@ -14,17 +14,15 @@ import "consts"
 import "actors/player"
 import "sceneManager"
 import "scenes/startScene"
+import "scenes/gameScene"
+import "scenes/gameOverScene"
+import "scenes/leaderboardScene"
 import "signal"
 import "highScore"
 
 !if PLAYDATE then
-!if PLAYDATE then
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
-!else
-local pd = playdate
-local gfx = playdate.graphics
-!end
 !else
 local pd = playdate
 local gfx = playdate.graphics
@@ -79,10 +77,15 @@ end
 NOTIFICATION_CENTER = Signal()
 SCENE_MANAGER = SceneManager()
 
-setupGame()
-StartScene()
+local gameInitialized = false
 
 function playdate.update()
+  if not gameInitialized then
+    setupGame()
+    StartScene()
+    gameInitialized = true
+  end
+  
   gfx.sprite.update()
   pd.timer.updateTimers()
 end

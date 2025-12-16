@@ -1,8 +1,10 @@
 import "consts"
 import "animations/explosion"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class("Projectile").extends(gfx.sprite)
 

@@ -1,8 +1,10 @@
 import "consts"
-import "scenes/gameScene"
+-- import "scenes/gameScene" -- Circular dependency, GameScene is global
+
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class('StartScene').extends(gfx.sprite)
 

@@ -1,8 +1,10 @@
 import "consts"
 import "background/planet"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 
 local planet1Image = gfx.image.new("Images/planet-1")

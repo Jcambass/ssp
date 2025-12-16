@@ -1,5 +1,5 @@
 import "consts"
-import "scenes/gameScene"
+-- import "scenes/gameScene" -- Circular dependency, GameScene is global
 import "scenes/leaderboardScene"
 import "highScore"
 import "CoreLibs/keyboard"

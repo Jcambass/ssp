@@ -1,9 +1,10 @@
 import "consts"
-import "actors/player"
 import "CoreLibs/animation"
+
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 local explosionImageTable = gfx.imagetable.new("Images/animations/smoke")
 

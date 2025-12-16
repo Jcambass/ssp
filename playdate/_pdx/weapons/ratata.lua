@@ -1,8 +1,10 @@
 import "consts"
 import "weapons/weapon"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class("Ratata").extends(Weapon)
 

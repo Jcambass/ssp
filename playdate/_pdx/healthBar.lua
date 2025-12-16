@@ -1,7 +1,9 @@
 import "consts"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class("HealthBar").extends(gfx.sprite)
 

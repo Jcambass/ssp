@@ -1,8 +1,10 @@
-import "scenes/gameOverScene"
+-- import "scenes/gameOverScene" -- Circular dependency, GameOverScene is global
 import "screenShake"
+
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class("BottomBar").extends(gfx.sprite)
 

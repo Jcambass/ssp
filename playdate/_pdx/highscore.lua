@@ -1,5 +1,7 @@
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 function GetHighScores()
   local t = pd.datastore.read("highscores")

@@ -1,11 +1,13 @@
 import "consts"
-import "scenes/gameScene"
+-- import "scenes/gameScene" -- Circular dependency, GameScene is global
 import "scenes/leaderboardScene"
 import "highScore"
 import "CoreLibs/keyboard"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class('GameOverScene').extends(gfx.sprite)
 

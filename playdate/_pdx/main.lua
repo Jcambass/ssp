@@ -14,11 +14,16 @@ import "consts"
 import "actors/player"
 import "sceneManager"
 import "scenes/startScene"
+import "scenes/gameScene"
+import "scenes/gameOverScene"
+import "scenes/leaderboardScene"
 import "signal"
 import "highScore"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 local leaderboardImage = gfx.image.new("Images/leaderboard")
 assert(leaderboardImage) -- make sure the image was where we thought
@@ -69,10 +74,15 @@ end
 NOTIFICATION_CENTER = Signal()
 SCENE_MANAGER = SceneManager()
 
-setupGame()
-StartScene()
+local gameInitialized = false
 
 function playdate.update()
+  if not gameInitialized then
+    setupGame()
+    StartScene()
+    gameInitialized = true
+  end
+  
   gfx.sprite.update()
   pd.timer.updateTimers()
 end

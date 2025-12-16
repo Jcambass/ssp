@@ -1,5 +1,4 @@
 import "consts"
-import "actors/player"
 import "CoreLibs/animation"
 
 !if PLAYDATE then

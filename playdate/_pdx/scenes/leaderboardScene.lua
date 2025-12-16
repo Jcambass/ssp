@@ -2,8 +2,10 @@ import "consts"
 import "scenes/gameScene"
 import "highScore"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 local leaderboardImage = gfx.image.new("Images/leaderboard")
 assert(leaderboardImage) -- make sure the image was where we thought

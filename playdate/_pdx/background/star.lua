@@ -1,7 +1,9 @@
 import "consts"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class("Star").extends(gfx.sprite)
 

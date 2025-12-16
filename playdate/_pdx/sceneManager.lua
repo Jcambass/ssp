@@ -1,17 +1,24 @@
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
-local fadedRects = {}
-for i=0,1,0.01 do
-    local fadedImage = gfx.image.new(400, 240)
-    gfx.pushContext(fadedImage)
-        local filledRect = gfx.image.new(400, 240, gfx.kColorBlack)
-        filledRect:drawFaded(0, 0, i, gfx.image.kDitherTypeBayer8x8)
-    gfx.popContext()
-    fadedRects[math.floor(i * 100)] = fadedImage
+
+local fadedRects = nil
+local function initializeFadedRects()
+    if fadedRects then return end
+    
+    fadedRects = {}
+    for i=0,1,0.01 do
+        local fadedImage = gfx.image.new(400, 240)
+        gfx.pushContext(fadedImage)
+            local filledRect = gfx.image.new(400, 240, gfx.kColorBlack)
+            filledRect:drawFaded(0, 0, i, gfx.image.kDitherTypeBayer8x8)
+        gfx.popContext()
+        fadedRects[math.floor(i * 100)] = fadedImage
+    end
+    fadedRects[100] = gfx.image.new(400, 240, gfx.kColorBlack)
 end
-fadedRects[100] = gfx.image.new(400, 240, gfx.kColorBlack)
 
 class('SceneManager').extends()
 
@@ -21,6 +28,8 @@ function SceneManager:init()
 end
 
 function SceneManager:switchScene(scene, ...)
+    initializeFadedRects() -- Initialize on first use
+    
     if self.transitioning then
         return
     end
@@ -93,6 +102,7 @@ function SceneManager:fadeTransition(startValue, endValue)
 end
 
 function SceneManager:getFadedImage(alpha)
+    initializeFadedRects()
     return fadedRects[math.floor(alpha * 100)]
 end
 

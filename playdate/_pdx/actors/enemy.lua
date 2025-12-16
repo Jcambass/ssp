@@ -4,8 +4,10 @@ import "animations/explosion"
 import "weapons/stomp"
 import "healthBar"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 class("Enemy").extends(gfx.sprite)
 

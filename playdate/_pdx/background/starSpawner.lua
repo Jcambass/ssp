@@ -1,8 +1,10 @@
 import "consts"
 import "background/star"
 
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
+
 
 local starImage = gfx.image.new("Images/star1-white")
 assert( starImage ) -- make sure the image was where we thought
