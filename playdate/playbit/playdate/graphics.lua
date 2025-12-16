@@ -7,14 +7,14 @@ require("playdate.imagetable")
 require("playdate.tilemap")
 require("playdate.sprites")
 
-module.kDrawModeCopy = 0
-module.kDrawModeWhiteTransparent = 1
-module.kDrawModeBlackTransparent = 2
-module.kDrawModeFillWhite = 3
-module.kDrawModeFillBlack = 4
-module.kDrawModeXOR = 5
-module.kDrawModeNXOR = 6
-module.kDrawModeInverted = 7
+module.kDrawModeCopy = playbit.graphics.kDrawModeCopy
+module.kDrawModeWhiteTransparent = playbit.graphics.kDrawModeWhiteTransparent
+module.kDrawModeBlackTransparent = playbit.graphics.kDrawModeBlackTransparent
+module.kDrawModeFillWhite = playbit.graphics.kDrawModeFillWhite
+module.kDrawModeFillBlack = playbit.graphics.kDrawModeFillBlack
+module.kDrawModeXOR = playbit.graphics.kDrawModeXOR
+module.kDrawModeNXOR = playbit.graphics.kDrawModeNXOR
+module.kDrawModeInverted = playbit.graphics.kDrawModeInverted
 
 module.kImageUnflipped = 0
 module.kImageFlippedX = 1
@@ -114,26 +114,7 @@ end
 
 -- "copy", "inverted", "XOR", "NXOR", "whiteTransparent", "blackTransparent", "fillWhite", or "fillBlack".
 function module.setImageDrawMode(mode)
-  playbit.graphics.drawMode = mode
-  if mode == module.kDrawModeCopy or mode == "copy" then
-    playbit.graphics.shader:send("mode", 0)
-  elseif mode == module.kDrawModeWhiteTransparent or mode == "whiteTransparent" then
-    playbit.graphics.shader:send("mode", 1)
-  elseif mode == module.kDrawModeBlackTransparent or mode == "blackTransparent" then
-    playbit.graphics.shader:send("mode", 2)
-  elseif mode == module.kDrawModeFillWhite or mode == "fillWhite" then
-    playbit.graphics.shader:send("mode", 3)
-  elseif mode == module.kDrawModeFillBlack or mode == "fillBlack" then
-    playbit.graphics.shader:send("mode", 4)
-  elseif mode == module.kDrawModeXOR or mode == "XOR" then
-    playbit.graphics.shader:send("mode", 5)
-  elseif mode == module.kDrawModeNXOR or mode == "NXOR" then
-    playbit.graphics.shader:send("mode", 6)
-  elseif mode == module.kDrawModeInverted or mode == "inverted" then
-    playbit.graphics.shader:send("mode", 7)
-  else
-    error("[ERR] Draw mode '"..mode.."' is not yet implemented.")
-  end
+  playbit.graphics.peakContext()._drawMode = mode
 end
 
 function module.drawCircleAtPoint(x, y, radius)
@@ -142,7 +123,7 @@ function module.drawCircleAtPoint(x, y, radius)
   love.graphics.circle("line", x, y, radius)
   playbit.graphics.updateContext()
 
-  module.setImageDrawMode(playbit.graphics.drawMode)
+  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.fillCircleAtPoint(x, y, radius)
@@ -150,8 +131,7 @@ function module.fillCircleAtPoint(x, y, radius)
 
   love.graphics.circle("fill", x, y, radius)
   playbit.graphics.updateContext()
-
-  module.setImageDrawMode(playbit.graphics.drawMode)
+   playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.setLineWidth(width)
@@ -163,8 +143,7 @@ function module.drawRect(x, y, width, height)
 
   love.graphics.rectangle("line", x, y, width, height)
   playbit.graphics.updateContext()
-
-  module.setImageDrawMode(playbit.graphics.drawMode)
+   playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.fillRect(x, y, width, height)
@@ -172,8 +151,7 @@ function module.fillRect(x, y, width, height)
 
   love.graphics.rectangle("fill", x, y, width, height)
   playbit.graphics.updateContext()
-
-  module.setImageDrawMode(playbit.graphics.drawMode)
+   playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.drawRoundRect(x, y, width, height, radius)
@@ -181,7 +159,7 @@ function module.drawRoundRect(x, y, width, height, radius)
   playbit.graphics.shader:send("mode", 8)
   love.graphics.rectangle("line", x, y, width, height, radius, radius)
   playbit.graphics.updateContext()
-  module.setImageDrawMode(playbit.graphics.drawMode)
+  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.fillRoundRect(x, y, width, height, radius)
@@ -189,7 +167,7 @@ function module.fillRoundRect(x, y, width, height, radius)
   playbit.graphics.shader:send("mode", 8)
   love.graphics.rectangle("fill", x, y, width, height, radius, radius)
   playbit.graphics.updateContext()
-  module.setImageDrawMode(playbit.graphics.drawMode)
+  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.drawLine(x1, y1, x2, y2)
@@ -197,8 +175,7 @@ function module.drawLine(x1, y1, x2, y2)
 
   love.graphics.line(x1, y1, x2, y2)
   playbit.graphics.updateContext()
-
-  module.setImageDrawMode(playbit.graphics.drawMode)
+  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.drawArc(x, y, radius, startAngle, endAngle)
@@ -218,8 +195,7 @@ function module.drawArc(x, y, radius, startAngle, endAngle)
     love.graphics.arc("line", "open", x, y, radius, math.rad(endAngle), math.rad(startAngle), 16)
   end
   playbit.graphics.updateContext()
-
-  module.setImageDrawMode(playbit.graphics.drawMode)
+  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.drawPixel(x, y)
@@ -227,8 +203,7 @@ function module.drawPixel(x, y)
 
   love.graphics.points(x, y)
   playbit.graphics.updateContext()
-
-  module.setImageDrawMode(playbit.graphics.drawMode)
+  playbit.graphics.applyImageDrawMode(playbit.graphics.peakContext().drawMode)
 end
 
 function module.setFont(font)
@@ -353,36 +328,17 @@ function module.pushContext(image)
     love.graphics.setCanvas(prevCanvas)
   end
   
-  -- Store the current draw mode
+  previousContext = playbit.graphics.peakContext()
+  -- store canvas and inherit draw mode from current context
   local contextInfo = {
+    canvas = image._canvas,
     image = image,
-    drawMode = playbit.graphics.drawMode
+    drawMode = previousContext.drawMode
   }
   
-  -- push context
-  table.insert(playbit.graphics.contextStack, contextInfo)
-
-  -- update current render target
-  love.graphics.setCanvas(image._canvas)
-  
-  -- Reset draw mode to copy for drawing into the context
-  module.setImageDrawMode(module.kDrawModeCopy)
+  playbit.graphics.pushContext(contextInfo)
 end
 
 function module.popContext()
-  @@ASSERT(#playbit.graphics.contextStack > 0, "No pushed context.")
-
-  -- pop context and restore draw mode
-  local contextInfo = table.remove(playbit.graphics.contextStack)
-  
-  -- update current render target
-  if #playbit.graphics.contextStack == 0 then
-    love.graphics.setCanvas(playbit.graphics.canvas)
-  else
-    local activeContext = playbit.graphics.contextStack[#playbit.graphics.contextStack]
-    love.graphics.setCanvas(activeContext.image._canvas)
-  end
-  
-  -- Restore the previous draw mode
-  module.setImageDrawMode(contextInfo.drawMode)
+  playbit.graphics.popContext()
 end

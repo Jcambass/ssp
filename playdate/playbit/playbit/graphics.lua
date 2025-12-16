@@ -52,8 +52,6 @@ module.drawColor = module.colorWhite
 module.backgroundColorIndex = 0
 module.backgroundColor = module.colorBlack
 module.activeFont = {}
-module.drawMode = "copy"
-module.canvas = love.graphics.newCanvas()
 module.contextStack = {}
 -- shared quad to reduce gc
 module.quad = love.graphics.newQuad(0, 0, 1, 1, 1, 1)
@@ -68,6 +66,94 @@ local canvasY = 0
 local windowWidth = 400
 local windowHeight = 240
 local fullscreen = false
+
+function module.peakContext()
+  if #module.contextStack == 0 then
+    return nil
+  else
+    return module.contextStack[#module.contextStack]
+  end
+end
+
+function module.createRootContext()
+  -- must be changed at start of frame when canvas is not active
+  -- render to canvas to allow 2x scaling
+  local canvas = love.graphics.newCanvas()
+  local newCanvasWidth, newCanvasHeight = module.getCanvasSize()
+  local canvasWidth = canvas:getWidth()
+  local canvasHeight = canvas:getHeight()
+  if canvasWidth ~= newCanvasWidth or canvasHeight ~= newCanvasHeight then
+    canvas = love.graphics.newCanvas(newCanvasWidth, newCanvasHeight)
+  end
+
+  -- push main canvas as root context
+  local contextInfo = {
+    canvas = canvas,
+    drawMode = module.kDrawModeCopy
+  }
+  
+  module.pushContext(contextInfo)
+
+  return contextInfo
+end
+
+function module.pushContext(contextInfo)
+  table.insert(module.contextStack, contextInfo)
+
+  -- update render target
+  love.graphics.setCanvas(contextInfo.canvas)
+
+  -- update draw mode
+  module.applyImageDrawMode(contextInfo.drawMode)
+end
+
+function module.popContext()
+  -- Top level context cannot be popped
+  if #module.contextStack <= 1 then
+    return
+  end
+
+  -- pop context
+  table.remove(module.contextStack)
+
+  -- update current render target
+  local activeContext = module.contextStack[#module.contextStack]
+  love.graphics.setCanvas(activeContext.canvas)
+
+  -- update draw mode
+  module.applyImageDrawMode(activeContext.drawMode)
+end
+
+module.kDrawModeCopy = 0
+module.kDrawModeWhiteTransparent = 1
+module.kDrawModeBlackTransparent = 2
+module.kDrawModeFillWhite = 3
+module.kDrawModeFillBlack = 4
+module.kDrawModeXOR = 5
+module.kDrawModeNXOR = 6
+module.kDrawModeInverted = 7
+
+function module.applyImageDrawMode(mode)
+  if mode == module.kDrawModeCopy or mode == "copy" then
+    playbit.graphics.shader:send("mode", 0)
+  elseif mode == module.kDrawModeWhiteTransparent or mode == "whiteTransparent" then
+    playbit.graphics.shader:send("mode", 1)
+  elseif mode == module.kDrawModeBlackTransparent or mode == "blackTransparent" then
+    playbit.graphics.shader:send("mode", 2)
+  elseif mode == module.kDrawModeFillWhite or mode == "fillWhite" then
+    playbit.graphics.shader:send("mode", 3)
+  elseif mode == module.kDrawModeFillBlack or mode == "fillBlack" then
+    playbit.graphics.shader:send("mode", 4)
+  elseif mode == module.kDrawModeXOR or mode == "XOR" then
+    playbit.graphics.shader:send("mode", 5)
+  elseif mode == module.kDrawModeNXOR or mode == "NXOR" then
+    playbit.graphics.shader:send("mode", 6)
+  elseif mode == module.kDrawModeInverted or mode == "inverted" then
+    playbit.graphics.shader:send("mode", 7)
+  else
+    error("[ERR] Draw mode '"..mode.."' is not yet implemented.")
+  end
+end
 
 --- Sets the scale of the canvas.
 ---@param scale number
@@ -172,15 +258,21 @@ function module.updateContext()
     return
   end
 
-  local contextInfo = module.contextStack[#module.contextStack]
-  local activeContext = contextInfo.image
+  local activeContext = module.contextStack[#module.contextStack]
+
+  module.applyImageDrawMode(activeContext.drawMode)
+
+  if not activeContext.image then
+    return
+  end
 
   -- love2d doesn't allow calling newImageData() when canvas is active
   love.graphics.setCanvas()
-  local imageData = activeContext._canvas:newImageData()
-  love.graphics.setCanvas(activeContext._canvas)
+  local imageData = activeContext.canvas:newImageData()
+  love.graphics.setCanvas(activeContext.canvas)
+
 
   -- update image
-  activeContext.data:replacePixels(imageData)
+  activeContext.image.data:replacePixels(imageData)
 end
 !end

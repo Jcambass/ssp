@@ -20,8 +20,6 @@ end
 
 local windowWidth, windowHeight = playbit.graphics.getWindowSize()
 
-playbit.graphics.canvas:setFilter("nearest", "nearest")
-
 love.graphics.setDefaultFilter("nearest", "nearest")
 love.graphics.setLineWidth(1)
 love.graphics.setLineStyle("rough")
@@ -34,13 +32,7 @@ local font = playdate.graphics.font.new("fonts/Phozon/Phozon")
 playdate.graphics.setFont(font)
 
 function love.draw()
-  -- must be changed at start of frame when canvas is not active
-  local newCanvasWidth, newCanvasHeight = playbit.graphics.getCanvasSize()
-  local canvasWidth = playbit.graphics.canvas:getWidth()
-  local canvasHeight = playbit.graphics.canvas:getHeight()
-  if canvasWidth ~= newCanvasWidth or canvasHeight ~= newCanvasHeight then
-    playbit.graphics.canvas = love.graphics.newCanvas(newCanvasWidth, newCanvasHeight)
-  end
+  local rootContext = playbit.graphics.createRootContext()  
 
   -- must be changed at start of frame - love2d doesn't allow changing window size with canvas active
   local newWindowWidth, newWindowHeight = playbit.graphics.getWindowSize()
@@ -62,8 +54,6 @@ function love.draw()
     windowHeight = newWindowHeight
   end
 
-  -- render to canvas to allow 2x scaling
-  love.graphics.setCanvas(playbit.graphics.canvas)
   love.graphics.setShader(playbit.graphics.shader)
   playbit.graphics.shader:send("white", playbit.graphics.colorWhite)
   playbit.graphics.shader:send("black", playbit.graphics.colorBlack)
@@ -105,7 +95,7 @@ function love.draw()
   -- draw canvas to screen
   local currentCanvasScale = playbit.graphics.getCanvasScale()
   local x, y = playbit.graphics.getCanvasPosition()
-  love.graphics.draw(playbit.graphics.canvas, x, y, 0, currentCanvasScale, currentCanvasScale)
+  love.graphics.draw(rootContext.canvas, x, y, 0, currentCanvasScale, currentCanvasScale)
 
   -- reset back to set color
   love.graphics.setColor(r, g, b, 1)
