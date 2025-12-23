@@ -12,77 +12,42 @@ A space shooter game built across multiple platforms and technologies, showcasin
 | Playdate | Lua + Playdate SDK | *On-device only* |
 
 
-## 📦 Project Versions
+## 📦 Versions
 
-### 🌐 JavaScript Version
+### 🌐 JavaScript
 
-The original implementation built with vanilla JavaScript and HTML5 Canvas.
+The original implementation using vanilla JavaScript and HTML5 Canvas with enemy AI, multiple weapons, and collision detection.
 
 ![JavaScript Version Demo](./gifs/js.gif)
 
-**Features:**
-- Pure JavaScript implementation
-- Canvas-based rendering
-- Responsive controls
-- Enemy AI and spawning system
-- Multiple weapon types
-- Collision detection
-
+**Tech:** Vanilla JavaScript • HTML5 Canvas • CSS3  
 **Play online:** [https://ssp-js.joel.am](https://ssp-js.joel.am)
 
-**Tech Stack:**
-- Vanilla JavaScript
-- HTML5 Canvas API
-- CSS3
 
+### ⚙️ Rust
 
-### ⚙️ Rust Version
-
-A high-performance reimplementation using the Bevy game engine, compiled to WebAssembly.
+Reimplementation using [Bevy](https://bevy.org/) game engine with ECS architecture, compiled to WebAssembly for browser deployment.
 
 ![Rust Version Demo](./gifs/rust.gif)
 
-**Features:**
-- Built with [Bevy](https://bevy.org/) game engine
-- Entity Component System (ECS) architecture
-- WebAssembly compilation for browser deployment
-- Optimized rendering and physics
-- Similar gameplay to JavaScript version
-
+**Tech:** Rust • Bevy Game Engine • WebAssembly  
 **Play online:** [https://ssp-rust.joel.am](https://ssp-rust.joel.am)
 
-**Tech Stack:**
-- Rust
-- Bevy Game Engine
-- WebAssembly (WASM)
 
+### 🎮 Playdate
 
-### 🎮 Playdate Version
-
-A portable version designed for the [Playdate](https://play.date/) handheld console.
+Portable version for the [Playdate](https://play.date/) handheld console with 1-bit graphics, optimized for 400×240 display with crank and button controls.
 
 ![Playdate Version Demo](./gifs/playdate.gif)
 
-**Features:**
-- Optimized for Playdate's 400×240 1-bit display
-- Crank and button controls
-- Lua-based implementation
-- Portable gaming experience
-- Black and white aesthetic
-
-**Tech Stack:**
-- Lua
-- Playdate SDK
+**Tech:** Lua • Playdate SDK  
+**Platform:** On-device only
 
 
 
 ## 🛠️ Development
 
-Each version is contained in its own directory:
-
-- `/javascript` - JavaScript/Canvas version
-- `/rust` - Rust/Bevy version  
-- `/playdate` - Playdate/Lua version
+Each version is contained in its own directory.
 
 Refer to the README files in each directory for specific build and development instructions.
 
