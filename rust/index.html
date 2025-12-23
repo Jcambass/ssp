@@ -4,15 +4,36 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 		<title>The Spaceship Project</title>
     <link data-trunk rel="copy-dir" href="assets"/>
-		<link data-trunk rel="inline" href="css/stylesheet.css"/>
+	<link data-trunk rel="inline" href="css/stylesheet.css"/>
 	</head>
 	<body>
       <canvas id="mainScreen" width="1120" height="605">
       </canvas>
 		<div id="title">
-			<p>Use <b>WASD</b> to move your spaceship, <b>J</b> to fire and <b>ESC</b> to pause!</p>
-			<p>Created by Joel Ambass - Based on the <a href="https://ssp-js.joel.am">original ssp project</a>
-        <br>
+			<div class="ssp-intro-controls">
+				<div class="control-item">
+					<div class="control-key-group">
+						<div class="arrow-row arrow-row-top">
+							<span class="control-key">W</span>
+						</div>
+						<div class="arrow-row arrow-row-bottom">
+							<span class="control-key">A</span>
+							<span class="control-key">S</span>
+							<span class="control-key">D</span>
+						</div>
+					</div>
+					<span class="control-label">Move</span>
+				</div>
+				<div class="control-item">
+					<span class="control-key">J</span>
+					<span class="control-label">Fire</span>
+				</div>
+				<div class="control-item">
+					<span class="control-key">ESC</span>
+					<span class="control-label">Pause</span>
+				</div>
+			</div>
+			<p>Created by Joel Ambass - Based on the <a href="https://ssp-js.joel.am">original ssp project</a></p>
 		</div>
 	</body>
 </html>
