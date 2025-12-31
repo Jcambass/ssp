@@ -43,7 +43,7 @@ function Player:init(x, y)
 
   self.speed = 4
   self.level = 1
-  self.level_scores = {500, 2000, 3000, 4000, 5500}
+  self.level_scores = {500, 2000, 3000, 4000}
 
   local projectileSize = 3
   local projectileImage = gfx.image.new(projectileSize * 2, projectileSize * 2)
@@ -63,12 +63,14 @@ function Player:init(x, y)
   self.weapon = Stomp(self)
 
   NOTIFICATION_CENTER:subscribe("score_updated", function(score)
+    if self.level > 4 then
+      return
+    end
+
     if score > self.level_scores[self.level] then
-      if self.level < 5 then
-        self.level = self.level + 1
-        local unlockedWeapon = self.weapons[self.level]
-        NOTIFICATION_CENTER:notify("display_message", "LEVEL UP! New weapon " .. unlockedWeapon.name .. " unlocked.", 3000)
-      end
+      self.level = self.level + 1
+      local unlockedWeapon = self.weapons[self.level]
+      NOTIFICATION_CENTER:notify("display_message", "LEVEL UP! New weapon " .. unlockedWeapon.name .. " unlocked.", 3000)
     end
  end)
 end
