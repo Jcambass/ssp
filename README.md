@@ -9,7 +9,8 @@ A space shooter game built across multiple platforms and technologies, showcasin
 |---------|-----------|-----------|
 | JavaScript | Vanilla JS + Canvas | [**Play Now →**](https://ssp-js.joel.am) |
 | Rust | Bevy Game Engine | [**Play Now →**](https://ssp-rust.joel.am) |
-| Playdate | Lua + Playdate SDK | *On-device only* |
+| PICO-8 | PICO-8 | [**Play Now →**](https://ssp-p8.joel.am) |
+| Playdate | Playdate | *On-device only* |
 
 
 ## 📦 Versions
@@ -32,6 +33,16 @@ Reimplementation using [Bevy](https://bevy.org/) game engine with ECS architectu
 
 **Tech:** Rust • Bevy Game Engine • WebAssembly  
 **Play online:** [https://ssp-rust.joel.am](https://ssp-rust.joel.am)
+
+
+### 🕹️ PICO-8
+
+Fantasy console version for [PICO-8](https://www.lexaloffle.com/pico-8.php) with retro 128×128 display, 16-color palette, and classic chiptune sound.
+
+![Pico-8 Version Demo](./gifs/p8.gif)
+
+**Tech:** Lua • PICO-8  
+**Play online:** [https://ssp-p8.joel.am](https://ssp-p8.joel.am)
 
 
 ### 🎮 Playdate
