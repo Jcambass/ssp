@@ -2,7 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 -- spaceshipproject
--- by @jcambass - joel.am
+-- by @jcambass - joel.am/games
 
 -- art by @jcambass inspired by
 -- https://kenney.nl/assets/space-shooter-redux
@@ -221,8 +221,8 @@ function sc_new_hs:draw()
 	draw_picoboard(lx+16+2, 40+4+12+2)
 end
 
-sc_endcard={}
-function sc_endcard:init()
+sc_gameover={}
+function sc_gameover:init()
 	init●()
 	local o=new(self, {
 		ex_t=timer(1),
@@ -234,7 +234,7 @@ function sc_endcard:init()
 	return o
 end
 
-function sc_endcard:update()
+function sc_gameover:update()
 	self.ex_t:update()
 	if self.ex_t.d then
 		local ex=explode({
@@ -247,7 +247,7 @@ function sc_endcard:update()
 			self.hide_earth=true
 		end
 		ex.done=function(_self)
-			game:show_hs()
+			game:new_or_show_hs()
 		end
 		ex:add()
 		sfx(13) 
@@ -259,7 +259,7 @@ function sc_endcard:update()
  update●()
 end
 
-function sc_endcard:draw()
+function sc_gameover:draw()
 	local t="game over!"
 	print("\^w\^h\^o7ff"..t, hcenter(t, 8)+4, 30, 8)
 	
@@ -288,14 +288,17 @@ game={
 		
 		self.sc=sc
 	end,
-	endcard_or_hs=function(self)
-		-- reserving channels 0 and 1
-		music(0, 500, 3) -- fade in
+	new_or_show_hs=function(self)
 		if is_new_hs() then
 			self.sc=sc_new_hs:init()
 		else
-			self.sc=sc_endcard:init()			
+			self.sc=sc_show_hs:init()
 		end
+	end,
+	gameover=function(self)
+		-- reserving channels 0 and 1
+		music(0, 500, 3) -- fade in
+		self.sc=sc_gameover:init()			
 	end,
 }
 
@@ -343,8 +346,8 @@ function update_ui()
 	end
 	
 	if earthh <= 0 then
-		-- skip gameover state
-		game:endcard_or_hs()
+		-- skip halted state
+		game:gameover()
 	end
 end
 
@@ -703,7 +706,7 @@ function init😐()
 				self.♥=0
 				local ex=explode(self)
 				ex.done=function(self)
-					game:endcard_or_hs()
+					game:gameover()
 				end
 				ex:add()
 				sfx(13) 
